@@ -9,12 +9,12 @@ public class pathfindExecutor implements Runnable { // Simple class that allows 
 	
 	public void run() {
 
+		int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags(flags);
 		long startTime = System.currentTimeMillis();
 		
 		if (Box.beginningAndEndExist()) {
 			
-			int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
-			VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags(flags);
 			PathfindRegion regionPathfind = null;
 			HashSet<Box> boxesAlongRegionPath = null;
 			
@@ -42,7 +42,10 @@ public class pathfindExecutor implements Runnable { // Simple class that allows 
 				}
 				
 			}
-				
+			
+			//long intermediateTime = System.currentTimeMillis();
+			//System.out.println(intermediateTime - startTime + " ms");
+			
 			if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.ASTAR) {
 				
 				pathfinder = new AStarPathfind(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
@@ -84,6 +87,8 @@ public class pathfindExecutor implements Runnable { // Simple class that allows 
 			pathfinder.waitForFinish();
 			long endTime = System.currentTimeMillis();
 			VisualizationBase.VISUALIZATION_GUI.setRunTimeCounter(endTime - startTime);
+			
+			//VisualizationBase.VISUALIZATION_WINDOW.repaintAll();
 			
 		}
 		
