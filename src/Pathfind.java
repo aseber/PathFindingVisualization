@@ -86,7 +86,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 		node.setF(f);
 		open.add(node);
-		node.box.setFlag(Box.BOX_QUEUED_FLAG);
+		node.box.setFlag(Box.flags.QUEUED);
 		
 	}
 	
@@ -119,7 +119,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 		node.box.setColor(new Color(red, green, 0));
 		
-		node.box.setFlag(Box.BOX_SEARCHED_FLAG);
+		node.box.setFlag(Box.flags.SEARCHED);
 		
 	}
 	
@@ -129,7 +129,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 		do {
 			
-			currentNode.box.setFlag(Box.BOX_SHORTEST_PATH_FLAG);
+			currentNode.box.setFlag(Box.flags.SHORTEST_PATH);
 			currentNode = currentNode.parentNode;
 			
 		}

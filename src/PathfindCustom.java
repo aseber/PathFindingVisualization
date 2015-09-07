@@ -50,7 +50,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 			
 			for (NodeBox neighbor : neighboringNodes) {
 				
-				if (neighbor.box.getFlag() != Box.BOX_QUEUED_FLAG && neighbor.box.getFlag() != Box.BOX_SEARCHED_FLAG && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
+				if (neighbor.box.getFlag() != Box.flags.QUEUED && neighbor.box.getFlag() != Box.flags.SEARCHED && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
 					
 					double g = neighbor.box.euclideanDistance(startNode.box);
 					double h = neighbor.box.euclideanDistance(endNode.box);
@@ -70,7 +70,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 			endOfPath = currentNode;
 			System.out.println("Path found! Retracing our steps and highlighting the path.");
 			HashSet<Box> boxes = boxesAlongPath();
-			Box.setFlags(boxes, Box.BOX_SHORTEST_PATH_FLAG);
+			Box.setFlags(boxes, Box.flags.SHORTEST_PATH);
 			VisualizationBase.VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
 			
 		} else if (isExpandedCounterExceeded()) {

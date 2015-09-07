@@ -117,59 +117,51 @@ public class DialogClearBoxes extends JDialog implements KeyListener {
 	
 	private void AcceptButtonMouseCLicked() {
 		
-		ArrayList<Integer> flags = new ArrayList<Integer>(10);
+		ArrayList<Box.flags> flags = new ArrayList<Box.flags>(10);
 		
 		if (searchedBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_SEARCHED_FLAG);
+			flags.add(Box.flags.SEARCHED);
 			
 		}
 		
 		if (fullBarrierBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_FULL_BARRIER_FLAG);
+			flags.add(Box.flags.FULL_BARRIER);
 			
 		}
 		
 		if (partialBarrierBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_PARTIAL_BARRIER_FLAG);
+			flags.add(Box.flags.PARTIAL_BARRIER);
 			
 		}
 		
 		if (shortBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_SHORTEST_PATH_FLAG);
+			flags.add(Box.flags.SHORTEST_PATH);
 			
 		}
 
 		if (startBoxCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_START_FLAG);
+			flags.add(Box.flags.START);
 			
 		}
 		
 		if (endBoxCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_END_FLAG);
+			flags.add(Box.flags.END);
 			
 		}
 		
 		if (queuedBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.BOX_QUEUED_FLAG);
+			flags.add(Box.flags.QUEUED);
 			
 		}
 		
-		int[] flagsArray = new int[flags.size()];
-		
-		for (int i = 0; i < flags.size(); i++) {
-			
-			flagsArray[i] = flags.get(i);
-			
-		}
-		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags(flagsArray);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags((Box.flags[]) flags.toArray());
 		Box.checkBeginningAndEndState();
 		
 		this.dispose();

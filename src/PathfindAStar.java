@@ -53,16 +53,16 @@ public class PathfindAStar extends Pathfind {
 			
 			for (NodeBox neighbor : neighboringNodes) {
 				
-				if (neighbor.box.getFlag() != Box.BOX_SEARCHED_FLAG && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
+				if (neighbor.box.getFlag() != Box.flags.SEARCHED && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
 					
 					double tentitive_g = currentNode.getG() + neighbor.box.euclideanDistance(currentNode.box)*(1 + VisualizationBase.weightModifier*neighbor.box.getWeight());
 					
-					if (neighbor.box.getFlag() != Box.BOX_QUEUED_FLAG | tentitive_g < neighbor.getG()) {
+					if (neighbor.box.getFlag() != Box.flags.QUEUED | tentitive_g < neighbor.getG()) {
 						
 						neighbor.setParent(currentNode);
 						neighbor.setG(tentitive_g);
 						
-						if (neighbor.box.getFlag() != Box.BOX_QUEUED_FLAG) {
+						if (neighbor.box.getFlag() != Box.flags.QUEUED) {
 							
 							addNodeToOpen(neighbor, neighbor.getG() + neighbor.box.euclideanDistance(endNode.box));
 							
@@ -84,7 +84,7 @@ public class PathfindAStar extends Pathfind {
 			endOfPath = currentNode;
 			System.out.println("Path found! Retracing our steps and highlighting the path.");
 			HashSet<Box> boxes = boxesAlongPath();
-			Box.setFlags(boxes, Box.BOX_SHORTEST_PATH_FLAG);
+			Box.setFlags(boxes, Box.flags.SHORTEST_PATH);
 			VisualizationBase.VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
 			
 		} else if (isExpandedCounterExceeded()) {

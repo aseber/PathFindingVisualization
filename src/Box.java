@@ -13,6 +13,51 @@ public class Box {
 	// A box can have a weight between 0.0 and 1.0, where 0.0 is considered "open" and 1.0 a "full barrier", values inbetween
 	// are considered weighted and change the way A-Star and Dijkstras algorithm rate each box
 	
+	public static enum corners {
+		
+		TOP_LEFT,
+		TOP_RIGHT,
+		BOTTOM_LEFT,
+		BOTTOM_RIGHT;
+		
+	}
+	
+	public static enum flags {
+		
+		STANDARD(new Color(200, 200, 200), "Standard"),
+		SEARCHED(new Color(200, 0, 0), "Searched"),
+		PARTIAL_BARRIER(null, "Barrier"),
+		FULL_BARRIER(new Color(10, 10, 10), "Barrier"),
+		SHORTEST_PATH(new Color(0, 0, 255), "Shortest Path"),
+		START(new Color(0, 0, 0), "Start"),
+		END(new Color(255, 255, 255), "End"),
+		QUEUED(new Color(155, 155, 155), "Queued"),
+		SELECTED(new Color(100, 100, 255), "Selected");
+		
+		private Color color;
+		private String name;
+		
+		private flags(Color inputColor, String inputName) {
+			
+			color = inputColor;
+			name = inputName;
+			
+		}
+		
+		public Color getColor() {
+			
+			return color;
+			
+		}
+		
+		public String toString() {
+			
+			return name;
+			
+		}
+		
+	}
+	
 	static protected Box selectedBox;
 	static protected Box startBox;
 	static protected Box endBox;
@@ -20,41 +65,15 @@ public class Box {
 	protected Point physicalPosition = new Point();
 	protected Point windowPosition = new Point();
 	private double weight = 0.0;
-	private Color color = DEFAULT_COLOR;
+	private Color color = flags.STANDARD.getColor();
 	private boolean selected = false;
-	private int flag = BOX_STANDARD_FLAG;
+	private flags flag = flags.STANDARD;
 	private HashSet<Edge> edges = new HashSet<Edge>();
 	private Region region = null;
 	
 	private static Box[][] boxMap;
 	
-	static final int BOX_STANDARD_FLAG = 0;
-	static final int BOX_SEARCHED_FLAG = 1;
-	static final int BOX_PARTIAL_BARRIER_FLAG = 2;
-	static final int BOX_FULL_BARRIER_FLAG = 3;
-	static final int BOX_SHORTEST_PATH_FLAG = 4;
-	static final int BOX_START_FLAG = 5;
-	static final int BOX_END_FLAG = 6;
-	static final int BOX_QUEUED_FLAG = 7;
-	static final Color DEFAULT_COLOR = new Color(180, 40, 220);
-	static final Color STANDARD_COLOR = new Color(200, 200, 200);
-	static final Color BARRIER_COLOR = new Color(10, 10, 10);
-	static final Color SEARCHED_COLOR = new Color(200, 0, 0);
-	static final Color SHORTEST_PATH_COLOR = new Color(0, 0, 255);
-	static final Color START_COLOR = new Color(0, 0, 0);
-	static final Color END_COLOR = new Color(255, 255, 255);
-	static final Color BOX_QUEUED_COLOR = new Color(155, 155, 155);
-	static final Color SELECTED_COLOR = new Color(100, 100, 255);
-	
-	static final int TOP_LEFT = 0;
-	static final int TOP_RIGHT = 1;
-	static final int BOTTOM_LEFT = 2;
-	static final int BOTTOM_RIGHT = 3;
-	
-	static final byte DIRECTION_DOWN = 0;
-	static final byte DIRECTION_RIGHT = 1;
-	
-	public Box(int x, int y, int window_X_Index, int window_Y_Index, int flag) {
+	public Box(int x, int y, int window_X_Index, int window_Y_Index, flags flag) {
 		
 		this.physicalPosition.setLocation(x, y);
 		this.windowPosition.setLocation(window_X_Index, window_Y_Index);
@@ -87,19 +106,19 @@ public class Box {
 		
 		if (weight == 0.0) {
 			
-			setFlag(BOX_STANDARD_FLAG);
+			setFlag(flags.STANDARD);
 			
 		}
 		
 		else if (weight == 1.0) {
 			
-			setFlag(BOX_FULL_BARRIER_FLAG);
+			setFlag(flags.FULL_BARRIER);
 			
 		}
 		
 		else {
 			
-			setFlag(BOX_PARTIAL_BARRIER_FLAG);
+			setFlag(flags.PARTIAL_BARRIER);
 			
 		}
 		
@@ -140,7 +159,7 @@ public class Box {
 			
 				int x = (int) (row*(VisualizationBase.boxXYSize));
 				int y = (int) (column*(VisualizationBase.boxXYSize));
-				new Box(x, y, row, column, Box.BOX_STANDARD_FLAG);
+				new Box(x, y, row, column, flags.STANDARD);
 			
 			}
 		
@@ -185,7 +204,7 @@ public class Box {
 		
 			Box oldStartBox = startBox;
 			startBox = null;
-			oldStartBox.setFlag(BOX_STANDARD_FLAG);
+			oldStartBox.setFlag(flags.STANDARD);
 			
 		}
 		
@@ -197,7 +216,7 @@ public class Box {
 		
 			Box oldEndBox = endBox;
 			endBox = null;
-			oldEndBox.setFlag(BOX_STANDARD_FLAG);
+			oldEndBox.setFlag(flags.STANDARD);
 			
 		}
 		
@@ -205,7 +224,7 @@ public class Box {
 	
 	public void edgeInitialization() {
 		
-		byte[][] offset = {{TOP_LEFT, DIRECTION_RIGHT}, {TOP_LEFT, DIRECTION_DOWN}, {TOP_RIGHT, DIRECTION_DOWN}, {BOTTOM_LEFT, DIRECTION_RIGHT}}; // Use HashMap but done wrong?
+		Object[][] offset = {{corners.TOP_LEFT, Edge.directions.RIGHT}, {corners.TOP_LEFT, Edge.directions.DOWN}, {corners.TOP_RIGHT, Edge.directions.DOWN}, {corners.BOTTOM_LEFT, Edge.directions.RIGHT}}; // Use HashMap but done wrong?
 		
 		Point point = null;
 		Edge edge = null;
@@ -213,9 +232,8 @@ public class Box {
 		
 		for (int i = 0; i < 4; i++) {
 			
-			
-			point = getPhysicalCorner(offset[i][0]);
-			edge = new Edge(this, point, offset[i][1], length);
+			point = getPhysicalCorner((corners) offset[i][0]);
+			edge = new Edge(this, point, (Edge.directions) offset[i][1], length);
 			edges.add(edge);
 			
 		}
@@ -228,31 +246,31 @@ public class Box {
 		
 	}
 	
-	public Point getPhysicalCorner(int cornerFlag) {
+	public Point getPhysicalCorner(corners cornerFlag) {
 		
 		Point point = new Point();
 		
-		if (cornerFlag == TOP_LEFT) {
+		if (cornerFlag == corners.TOP_LEFT) {
 			
 			return physicalPosition;
 			
 		}
 		
-		else if (cornerFlag == TOP_RIGHT) {
+		else if (cornerFlag == corners.TOP_RIGHT) {
 			
 			point.setLocation(physicalPosition.getX() + VisualizationBase.boxXYSize, physicalPosition.getY() + 0);
 			return point;
 			
 		}
 		
-		else if (cornerFlag == BOTTOM_LEFT) {
+		else if (cornerFlag == corners.BOTTOM_LEFT) {
 			
 			point.setLocation(physicalPosition.getX() + 0, physicalPosition.getY() + VisualizationBase.boxXYSize);
 			return point;
 			
 		}
 		
-		else if (cornerFlag == BOTTOM_RIGHT) {
+		else if (cornerFlag == corners.BOTTOM_RIGHT) {
 			
 			point.setLocation(physicalPosition.getX() + VisualizationBase.boxXYSize, physicalPosition.getY() + VisualizationBase.boxXYSize);
 			return point;
@@ -273,11 +291,11 @@ public class Box {
 		
 		if (selected) {
 			
-			return SELECTED_COLOR;
+			return flags.SELECTED.getColor();
 			
 		} 
 		
-		else if (this.flag == BOX_PARTIAL_BARRIER_FLAG || this.flag == BOX_SEARCHED_FLAG) {
+		else if (this.flag == flags.PARTIAL_BARRIER || this.flag == flags.SEARCHED) {
 		
 			return color;
 			
@@ -285,37 +303,9 @@ public class Box {
 		
 		else {
 		
-			switch(this.getFlag()) {
-				
-				case BOX_STANDARD_FLAG:
-					
-					return STANDARD_COLOR;
-			
-				case BOX_FULL_BARRIER_FLAG:
-				
-					return BARRIER_COLOR;
-				
-				case BOX_START_FLAG:
-					
-					return START_COLOR;
-				
-				case BOX_END_FLAG:
-					
-					return END_COLOR;
-					
-				case BOX_SHORTEST_PATH_FLAG:
-						
-					return SHORTEST_PATH_COLOR;
-						
-				case BOX_QUEUED_FLAG:
-						
-					return BOX_QUEUED_COLOR;
-				
-			}
+			return this.getFlag().getColor();
 			
 		}
-		
-		return DEFAULT_COLOR;
 		
 	}
 	
@@ -325,7 +315,7 @@ public class Box {
 		
 	}
 	
-	public int getFlag() {
+	public flags getFlag() {
 		
 		return flag;
 		
@@ -548,7 +538,7 @@ public class Box {
 		
 	}
 	
-	public static void setFlags(HashSet<Box> boxes, int flag) {
+	public static void setFlags(HashSet<Box> boxes, flags flag) {
 		
 		for (Box box : boxes) {
 			
@@ -640,7 +630,7 @@ public class Box {
 		
 	}
 	
-	public void setFlag(int newFlag) {
+	public void setFlag(flags newFlag) {
 		
 		if (this.getFlag() == newFlag) {
 			
@@ -656,25 +646,25 @@ public class Box {
 			
 		}
 		
-		if (newFlag == BOX_START_FLAG) {
+		if (newFlag == flags.START) {
 			
 			resetStartBox();
-			this.flag = BOX_START_FLAG;
+			this.flag = flags.START;
 			startBox = this;
 			checkBeginningAndEndState();
 			
 		}
 		
-		else if (newFlag == BOX_END_FLAG) {
+		else if (newFlag == flags.END) {
 			
 			resetEndBox();
-			this.flag = BOX_END_FLAG;
+			this.flag = flags.END;
 			endBox = this;
 			checkBeginningAndEndState();
 			
 		}
 		
-		else if (newFlag == BOX_FULL_BARRIER_FLAG) {
+		else if (newFlag == flags.FULL_BARRIER) {
 			
 			weight = 1.0;
 			this.flag = newFlag;
@@ -683,14 +673,14 @@ public class Box {
 			
 		}
 		
-		else if (newFlag == BOX_PARTIAL_BARRIER_FLAG) {
+		else if (newFlag == flags.PARTIAL_BARRIER) {
 			
 			int value = (int) (200 - weight*150);
 			color = new Color(value, value, value);
 			
 		}
 		
-		else if (newFlag == BOX_STANDARD_FLAG) {
+		else if (newFlag == flags.STANDARD) {
 			
 			weight = 0.0;
 			
@@ -810,7 +800,7 @@ public class Box {
 	
 	public boolean isFullBarrier() {
 		
-		if (flag == BOX_FULL_BARRIER_FLAG) {
+		if (flag == flags.FULL_BARRIER) {
 			
 			return true;
 			
@@ -822,7 +812,7 @@ public class Box {
 	
 	public boolean isPartialBarrier() {
 		
-		if (flag == BOX_PARTIAL_BARRIER_FLAG) {
+		if (flag == flags.PARTIAL_BARRIER) {
 			
 			return true;
 			
@@ -874,36 +864,7 @@ public class Box {
 	
 	public String flagToString(int flag) {
 		
-		switch (flag) {
-		
-			case BOX_STANDARD_FLAG:
-				return "Standard (" + weight + ")";
-		
-			case BOX_FULL_BARRIER_FLAG:
-				return "Barrier (" + weight + ")";
-				
-			case BOX_PARTIAL_BARRIER_FLAG:
-				return "Partial Barrier (" + weight + ")";
-				
-			case BOX_SEARCHED_FLAG:
-				return "Searched";
-			
-			case BOX_SHORTEST_PATH_FLAG:
-				return "Shortest Path";
-			
-			case BOX_START_FLAG:
-				return "Start";
-				
-			case BOX_END_FLAG:
-				return "End";
-				
-			case BOX_QUEUED_FLAG:
-				return "Queued";
-				
-			default:
-				return null;
-			
-		}
+		return this.getFlag().toString();
 		
 	}
 	

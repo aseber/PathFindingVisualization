@@ -357,52 +357,52 @@ public class VisualizationGUI extends JFrame {
 	
 	private void fileResetAllBoxes() {
 		
-		int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_PARTIAL_BARRIER_FLAG, Box.BOX_FULL_BARRIER_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_START_FLAG, Box.BOX_END_FLAG, Box.BOX_QUEUED_FLAG};
+		Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.PARTIAL_BARRIER, Box.flags.FULL_BARRIER, Box.flags.SHORTEST_PATH, Box.flags.START, Box.flags.END, Box.flags.QUEUED};
 		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags(flags);
 		
 	}
 	
 	private void fileResetSearchedBoxes() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_SEARCHED_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.SEARCHED);
 		
 	}
 	
 	private void fileResetFullBarrierBoxes() {
 			
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_FULL_BARRIER_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.FULL_BARRIER);
 			
 	}
 	
 	private void fileResetPartialBarrierBoxes() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_PARTIAL_BARRIER_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.PARTIAL_BARRIER);
 			
 	}
 	
 	private void fileResetShortBoxes() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_SHORTEST_PATH_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.SHORTEST_PATH);
 		
 	}
 	
 	private void fileResetStartBox() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_START_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.START);
 		Box.checkBeginningAndEndState();
 		
 	}
 	
 	private void fileResetEndBox() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_END_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.END);
 		Box.checkBeginningAndEndState();
 		
 	}
 	
 	private void fileResetQueuedBoxes() {
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.BOX_QUEUED_FLAG);
+		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlag(Box.flags.QUEUED);
 		
 	}
 	

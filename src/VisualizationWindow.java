@@ -225,28 +225,27 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 	}
 	
-	public void clearBoxFieldFlag(int flag) {
+	public void clearBoxFieldFlag(Box.flags flag) {
 		
-		if (flag == Box.BOX_STANDARD_FLAG) {return;}
-		if (flag == Box.BOX_START_FLAG) {Box.resetStartBox(); return;}
-		if (flag == Box.BOX_END_FLAG) {Box.resetEndBox();  return;}
-		if (flag < Box.BOX_STANDARD_FLAG || flag > Box.BOX_QUEUED_FLAG) {return;}
+		if (flag == Box.flags.STANDARD) {return;}
+		if (flag == Box.flags.START) {Box.resetStartBox(); return;}
+		if (flag == Box.flags.END) {Box.resetEndBox();  return;}
 		
 		for (Box box : Box.getAllBoxes()) {
 			
 			if (box.getFlag() == flag) {
 				
-				if (flag != Box.BOX_PARTIAL_BARRIER_FLAG) {
+				if (flag != Box.flags.PARTIAL_BARRIER) {
 					
 					if (box.getWeight() == 0.0 || box.getWeight() == 1.0) {
 					
-						box.setFlag(Box.BOX_STANDARD_FLAG);
+						box.setFlag(Box.flags.STANDARD);
 						
 					}
 					
 					else if (box.getWeight() != 1.0) {
 						
-						box.setFlag(Box.BOX_PARTIAL_BARRIER_FLAG);
+						box.setFlag(Box.flags.PARTIAL_BARRIER);
 						
 					}
 					
@@ -254,7 +253,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				
 				else {
 					
-					box.setFlag(Box.BOX_STANDARD_FLAG);
+					box.setFlag(Box.flags.STANDARD);
 					
 				}
 				
@@ -264,9 +263,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 	}
 	
-	public void clearBoxFieldFlags(int[] flags) {
+	public void clearBoxFieldFlags(Box.flags[] flags) {
 		
-		for (int flag : flags) {
+		for (Box.flags flag : flags) {
 			
 			clearBoxFieldFlag(flag);
 			
@@ -353,7 +352,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			if (shiftDown) {
 				
-				box.setFlag(Box.BOX_START_FLAG);
+				box.setFlag(Box.flags.START);
 				
 			}
 			
@@ -369,13 +368,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			if (shiftDown) {
 				
-				box.setFlag(Box.BOX_END_FLAG);
+				box.setFlag(Box.flags.END);
 				
 			}
 			
 			else {
 				
-				Box.setFlags(boxes, Box.BOX_STANDARD_FLAG);
+				Box.setFlags(boxes, Box.flags.STANDARD);
 				
 			}
 			
@@ -398,7 +397,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 			if (box != oldBox) {
 			
-				int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
+				Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
 				clearBoxFieldFlags(flags);
 				
 				Pathfind path = new PathfindAStar(new NodeBox(Box.getBoxFromIndex(VisualizationBase.ROW_COLUMN_COUNT/2, VisualizationBase.ROW_COLUMN_COUNT/2), null), new NodeBox(Box.getBoxFromPosition(mouseX, mouseY), null));
@@ -446,7 +445,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 			for (Box currentBox : boxesList) {
 				
-				currentBox.setFlag(Box.BOX_STANDARD_FLAG);
+				currentBox.setFlag(Box.flags.STANDARD);
 				
 			}
 
@@ -496,7 +495,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				
 			}
 				
-			int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
+			Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
 			clearBoxFieldFlags(flags);
 			
 		}

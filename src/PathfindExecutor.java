@@ -9,7 +9,7 @@ public class PathfindExecutor implements Runnable { // Simple class that allows 
 	
 	public void run() {
 
-		int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
+		Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
 		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags(flags);
 		long startTime = System.currentTimeMillis();
 		
