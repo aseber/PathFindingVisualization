@@ -401,7 +401,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				int[] flags = {Box.BOX_SEARCHED_FLAG, Box.BOX_SHORTEST_PATH_FLAG, Box.BOX_QUEUED_FLAG};
 				clearBoxFieldFlags(flags);
 				
-				Pathfind path = new AStarPathfind(new BoxNode(Box.getBoxFromIndex(VisualizationBase.ROW_COLUMN_COUNT/2, VisualizationBase.ROW_COLUMN_COUNT/2), null), new BoxNode(Box.getBoxFromPosition(mouseX, mouseY), null));
+				Pathfind path = new PathfindAStar(new BoxNode(Box.getBoxFromIndex(VisualizationBase.ROW_COLUMN_COUNT/2, VisualizationBase.ROW_COLUMN_COUNT/2), null), new BoxNode(Box.getBoxFromPosition(mouseX, mouseY), null));
 				path.start();
 				
 			}
@@ -505,7 +505,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void runPathfinder() {
 		
-		new Thread(new pathfindExecutor()).start();
+		new Thread(new PathfindExecutor()).start();
 		
 	}
 	

@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.HashSet;
 
 
-public class pathfindExecutor implements Runnable { // Simple class that allows me to move the processing to a new thread so the UI doesn't lag.
+public class PathfindExecutor implements Runnable { // Simple class that allows me to move the processing to a new thread so the UI doesn't lag.
 													// Also lets me test the algorithms speed
 	
 	Pathfind pathfinder;
@@ -48,15 +48,15 @@ public class pathfindExecutor implements Runnable { // Simple class that allows 
 			
 			if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.ASTAR) {
 				
-				pathfinder = new AStarPathfind(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindAStar(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
 				
 			} else if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.DIJKSTRA) {
 			
-				pathfinder = new DijkstrasPathfind(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindDijkstra(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
 				
 			} else if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.CUSTOM) {
 				
-				pathfinder = new CustomPathfind(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindCustom(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
 				
 			}
 			
