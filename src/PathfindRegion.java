@@ -4,19 +4,19 @@ import java.util.PriorityQueue;
 
 public class PathfindRegion extends Thread {
 
-	protected RegionNode startNode;
-	protected RegionNode endNode;
+	protected NodeRegion startNode;
+	protected NodeRegion endNode;
 	protected double expandedCounter;
 	protected final double EXPANDED_COUNTER_HARD_CAP = 100000;
 	protected boolean running = true;
 	protected boolean pause = false;
 	protected boolean pathFound = false;
 	protected BestPathComparator comparator = new BestPathComparator();
-	protected PriorityQueue<RegionNode> open = new PriorityQueue<RegionNode>(10, comparator);
-	protected PriorityQueue<RegionNode> closed = new PriorityQueue<RegionNode>(10, comparator);
-	protected RegionNode endOfPath = null;
+	protected PriorityQueue<NodeRegion> open = new PriorityQueue<NodeRegion>(10, comparator);
+	protected PriorityQueue<NodeRegion> closed = new PriorityQueue<NodeRegion>(10, comparator);
+	protected NodeRegion endOfPath = null;
 	
-	public PathfindRegion(RegionNode startNode, RegionNode endNode) {
+	public PathfindRegion(NodeRegion startNode, NodeRegion endNode) {
 	
 		this.startNode = startNode;
 		this.endNode = endNode;
@@ -47,7 +47,7 @@ public class PathfindRegion extends Thread {
 	
 	public void searchForPath() {
 		
-		RegionNode currentNode;
+		NodeRegion currentNode;
 		
 		do {
 			
@@ -82,10 +82,10 @@ public class PathfindRegion extends Thread {
 			addNodeToClosed(currentNode);
 			//VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
 			//VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-			HashSet<RegionNode> neighboringNodes = currentNode.findNeighboringNodes();
+			HashSet<NodeRegion> neighboringNodes = currentNode.findNeighboringNodes();
 			expandedCounter++;
 			
-			for (RegionNode neighbor : neighboringNodes) {
+			for (NodeRegion neighbor : neighboringNodes) {
 				
 				if (!closed.contains(neighbor)) {
 					
@@ -168,14 +168,14 @@ public class PathfindRegion extends Thread {
 		
 	}
 	
-	protected final void addNodeToOpen(RegionNode node, double f) {
+	protected final void addNodeToOpen(NodeRegion node, double f) {
 		
 		node.setF(f);
 		open.add(node);
 		
 	}
 	
-	protected final void addNodeToClosed(RegionNode node) {
+	protected final void addNodeToClosed(NodeRegion node) {
 		
 		closed.add(node);
 	
@@ -183,7 +183,7 @@ public class PathfindRegion extends Thread {
 	
 	protected final void returnPath(Node endNode) {
 		
-		RegionNode currentNode = endOfPath;
+		NodeRegion currentNode = endOfPath;
 		
 		do {
 			
@@ -234,7 +234,7 @@ public class PathfindRegion extends Thread {
 		}
 
 		regionsList.add(startNode.region);
-		RegionNode currentNode = endOfPath;
+		NodeRegion currentNode = endOfPath;
 		
 		if (currentNode == null) {
 			

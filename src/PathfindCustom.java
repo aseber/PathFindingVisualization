@@ -2,7 +2,7 @@ import java.util.HashSet;
 
 public class PathfindCustom extends Pathfind { // Shitty pathfinding class I used for testing, you can play with the G and H values for interesting results
 	
-	public PathfindCustom(BoxNode startNode, BoxNode endNode) {
+	public PathfindCustom(NodeBox startNode, NodeBox endNode) {
 	
 		super(startNode, endNode, 0);
 		
@@ -10,7 +10,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 	
 	public void searchForPath() {
 		
-		BoxNode currentNode;
+		NodeBox currentNode;
 		
 		do {
 			
@@ -45,10 +45,10 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 			addNodeToClosed(currentNode);
 			VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
 			VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-			HashSet<BoxNode> neighboringNodes = currentNode.findNeighboringNodes();
+			HashSet<NodeBox> neighboringNodes = currentNode.findNeighboringNodes();
 			expandedCounter++;
 			
-			for (BoxNode neighbor : neighboringNodes) {
+			for (NodeBox neighbor : neighboringNodes) {
 				
 				if (neighbor.box.getFlag() != Box.BOX_QUEUED_FLAG && neighbor.box.getFlag() != Box.BOX_SEARCHED_FLAG && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
 					

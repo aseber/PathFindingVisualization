@@ -4,7 +4,7 @@ public class PathfindDijkstra extends Pathfind {
 	
 	// Implementation for Dijkstra's algorithm. Code is nearly identical to A-Star but disregards the cost heuristic for the current box to the end box
 	
-	public PathfindDijkstra(BoxNode startNode, BoxNode endNode) {
+	public PathfindDijkstra(NodeBox startNode, NodeBox endNode) {
 	
 		super(startNode, endNode, 0);
 		startNode.setG(0);
@@ -13,7 +13,7 @@ public class PathfindDijkstra extends Pathfind {
 	
 	public void searchForPath() {
 		
-		BoxNode currentNode;
+		NodeBox currentNode;
 		
 		do {
 			
@@ -48,10 +48,10 @@ public class PathfindDijkstra extends Pathfind {
 			addNodeToClosed(currentNode);
 			VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
 			VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-			HashSet<BoxNode> neighboringNodes = currentNode.findNeighboringNodes();
+			HashSet<NodeBox> neighboringNodes = currentNode.findNeighboringNodes();
 			expandedCounter++;
 			
-			for (BoxNode neighbor : neighboringNodes) {
+			for (NodeBox neighbor : neighboringNodes) {
 				
 				if (neighbor.box.getFlag() != Box.BOX_SEARCHED_FLAG && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
 					

@@ -2,7 +2,7 @@ import java.util.HashSet;
 
 public class PathfindAStar extends Pathfind {
 	
-	public PathfindAStar(BoxNode startNode, BoxNode endNode) {
+	public PathfindAStar(NodeBox startNode, NodeBox endNode) {
 	
 		super(startNode, endNode, startNode.getG() + startNode.box.euclideanDistance(endNode.box));
 		startNode.setG(0);
@@ -13,7 +13,7 @@ public class PathfindAStar extends Pathfind {
 	
 	public void searchForPath() {
 		
-		BoxNode currentNode;
+		NodeBox currentNode;
 		
 		do {
 			
@@ -48,10 +48,10 @@ public class PathfindAStar extends Pathfind {
 			addNodeToClosed(currentNode);
 			VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
 			VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-			HashSet<BoxNode> neighboringNodes = currentNode.findNeighboringNodes();
+			HashSet<NodeBox> neighboringNodes = currentNode.findNeighboringNodes();
 			expandedCounter++;
 			
-			for (BoxNode neighbor : neighboringNodes) {
+			for (NodeBox neighbor : neighboringNodes) {
 				
 				if (neighbor.box.getFlag() != Box.BOX_SEARCHED_FLAG && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
 					

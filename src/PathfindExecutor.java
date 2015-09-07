@@ -20,7 +20,7 @@ public class PathfindExecutor implements Runnable { // Simple class that allows 
 			
 			if (VisualizationBase.hierarchicalPathfinding) {
 				
-				regionPathfind = new PathfindRegion(new RegionNode(Box.startBox.getRegion(), null), new RegionNode(Box.endBox.getRegion(), null));
+				regionPathfind = new PathfindRegion(new NodeRegion(Box.startBox.getRegion(), null), new NodeRegion(Box.endBox.getRegion(), null));
 				regionPathfind.start();
 				HashSet<Region> regionsOnPath = regionPathfind.regionsAlongPath();
 				HashSet<Region> expandedRegionsOnPath = new HashSet<Region>();
@@ -48,15 +48,15 @@ public class PathfindExecutor implements Runnable { // Simple class that allows 
 			
 			if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.ASTAR) {
 				
-				pathfinder = new PathfindAStar(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindAStar(new NodeBox(Box.startBox, null), new NodeBox(Box.endBox, null));
 				
 			} else if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.DIJKSTRA) {
 			
-				pathfinder = new PathfindDijkstra(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindDijkstra(new NodeBox(Box.startBox, null), new NodeBox(Box.endBox, null));
 				
 			} else if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.CUSTOM) {
 				
-				pathfinder = new PathfindCustom(new BoxNode(Box.startBox, null), new BoxNode(Box.endBox, null));
+				pathfinder = new PathfindCustom(new NodeBox(Box.startBox, null), new NodeBox(Box.endBox, null));
 				
 			}
 			

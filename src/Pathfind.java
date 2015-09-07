@@ -5,8 +5,8 @@ import java.util.PriorityQueue;
 
 public abstract class Pathfind extends Thread { // Abstract class that all of the pathfinding algorithms are based on
 
-	protected BoxNode startNode;
-	protected BoxNode endNode;
+	protected NodeBox startNode;
+	protected NodeBox endNode;
 	protected double expandedCounter;
 	protected final double EXPANDED_COUNTER_HARD_CAP = 100000;
 	protected boolean running = false;
@@ -14,11 +14,11 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 	protected boolean pathFound = false;
 	protected HashSet<Box> allowedBoxes;
 	protected BestPathComparator comparator = new BestPathComparator();
-	protected PriorityQueue<BoxNode> open = new PriorityQueue<BoxNode>(10, comparator);
-	protected PriorityQueue<BoxNode> closed = new PriorityQueue<BoxNode>(10, comparator);
-	protected BoxNode endOfPath = null;
+	protected PriorityQueue<NodeBox> open = new PriorityQueue<NodeBox>(10, comparator);
+	protected PriorityQueue<NodeBox> closed = new PriorityQueue<NodeBox>(10, comparator);
+	protected NodeBox endOfPath = null;
 	
-	public Pathfind(BoxNode startNode, BoxNode endNode, double f) {
+	public Pathfind(NodeBox startNode, NodeBox endNode, double f) {
 		
 		this.startNode = startNode;
 		this.endNode = endNode;
@@ -82,7 +82,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 	}
 	
-	protected final void addNodeToOpen(BoxNode node, double f) {
+	protected final void addNodeToOpen(NodeBox node, double f) {
 		
 		node.setF(f);
 		open.add(node);
@@ -108,7 +108,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 	}
 	
-	protected final void addNodeToClosed(BoxNode node) {
+	protected final void addNodeToClosed(NodeBox node) {
 		
 		closed.add(node);
 		
@@ -123,9 +123,9 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 	}
 	
-	protected final void returnPath(BoxNode endNode) {
+	protected final void returnPath(NodeBox endNode) {
 		
-		BoxNode currentNode = endOfPath;
+		NodeBox currentNode = endOfPath;
 		
 		do {
 			
@@ -168,7 +168,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 		if (isPathFound()) {
 		
-			BoxNode currentNode = endOfPath;
+			NodeBox currentNode = endOfPath;
 			
 			do {
 				
@@ -223,7 +223,7 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 			
 		}
 			
-		BoxNode currentNode = endOfPath;
+		NodeBox currentNode = endOfPath;
 			
 		do {
 				

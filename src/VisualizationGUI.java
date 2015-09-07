@@ -408,7 +408,7 @@ public class VisualizationGUI extends JFrame {
 	
 	private void fileResetSomeBoxes() {
 		
-		ClearBoxDialog BoxGUI = new ClearBoxDialog(this);
+		DialogClearBoxes BoxGUI = new DialogClearBoxes(this);
 		BoxGUI.setModalityType(ModalityType.APPLICATION_MODAL);
 		BoxGUI.setVisible(true);
 		
@@ -422,7 +422,7 @@ public class VisualizationGUI extends JFrame {
 	
 	private void settingsChangeAlgorithm() {
 		
-		AlgorithmDialog AlgorithmGUI = new AlgorithmDialog(this);
+		DialogAlgorithm AlgorithmGUI = new DialogAlgorithm(this);
 		AlgorithmGUI.setModalityType(ModalityType.APPLICATION_MODAL);
 		AlgorithmGUI.setVisible(true);
 		
@@ -430,7 +430,7 @@ public class VisualizationGUI extends JFrame {
 	
 	private void settingsChangeWindow() {
 		
-		WindowDialog WindowGUI = new WindowDialog(this);
+		DialogWindow WindowGUI = new DialogWindow(this);
 		WindowGUI.setModalityType(ModalityType.APPLICATION_MODAL);
 		WindowGUI.setVisible(true);
 		
