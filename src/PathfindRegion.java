@@ -61,9 +61,9 @@ public class PathfindRegion extends Thread {
 						
 					}
 					
-					if (VisualizationBase.sleepTimer > 0) {
+					if (VisualizationBase.SLEEP_TIMER > 0) {
 					
-						sleep(VisualizationBase.sleepTimer);
+						sleep(VisualizationBase.SLEEP_TIMER);
 						
 					}
 					

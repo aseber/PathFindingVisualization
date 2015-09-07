@@ -72,10 +72,10 @@ public class DialogWindow extends JDialog {
 		boxSizeLabel.setText("Box Row/Column Size");
 		contentPanel.add(boxSizeLabel, CC.xywh(2, 4, 1, 1));
 		
-		boxSizeField.setText(Integer.toString((int) (VisualizationBase.boxXYSize)));
+		boxSizeField.setText(Integer.toString((int) (VisualizationBase.BOX_XY_SIZE)));
 		contentPanel.add(boxSizeField, CC.xywh(4, 4, 1, 1));
 		
-		regionSizeField.setText(Integer.toString(VisualizationBase.regionSize));
+		regionSizeField.setText(Integer.toString(VisualizationBase.REGION_SIZE));
 		contentPanel.add(regionSizeField, CC.xywh(4, 6, 1, 1));
 		
 		regionSizeLabel.setText("Region Row/Column Size");
@@ -121,22 +121,14 @@ public class DialogWindow extends JDialog {
 	
 	private void AcceptButtonMouseCLicked() {
 		
-		if (VisualizationBase.VISUALIZATION_WINDOW.pathfinder != null) {
-			
-			if (VisualizationBase.VISUALIZATION_WINDOW.pathfinder.isRunning()) {
-				
-				VisualizationBase.VISUALIZATION_WINDOW.pathfinder.end();
-				
-			}
-			
-		}
+		VisualizationBase.VISUALIZATION_WINDOW.executor.endPathfinding();
 		
 		VisualizationBase.VISUALIZATION_WINDOW.removeBoxRegionField();
 		VisualizationBase.ROW_COLUMN_COUNT = Integer.parseInt(boxCountField.getText());
 		int sizeInt = Integer.parseInt(boxSizeField.getText());
-		VisualizationBase.boxXYSize = sizeInt;
-		VisualizationBase.regionSize = Integer.parseInt(regionSizeField.getText());
-		Dimension windowSize = new Dimension((int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize), (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize));
+		VisualizationBase.BOX_XY_SIZE = sizeInt;
+		VisualizationBase.REGION_SIZE = Integer.parseInt(regionSizeField.getText());
+		Dimension windowSize = new Dimension((int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE), (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE));
 		VisualizationBase.VISUALIZATION_WINDOW.setWindowSize(windowSize);
 		Box.initializeStaticVariables();
 		Region.initializeStaticVariables();

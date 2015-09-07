@@ -15,8 +15,6 @@ import javax.swing.JPanel;
 
 public class VisualizationWindow extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 	
-	Pathfind pathfinder = null;
-	
 	private static final long serialVersionUID = -453107461013635372L;
 	int WINDOW_WIDTH, WINDOW_HEIGHT;
 	static boolean mouse1Down, mouse3Down, shiftDown, spaceDown;
@@ -27,8 +25,11 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	int drawSize = 1;
 	private BufferedImage image, regionChangeImage;
 	RegionEventDriver driver = new RegionEventDriver();
+	PathfindExecutor executor = new PathfindExecutor();
 	
 	public VisualizationWindow() {
+		
+		new Thread(executor).start();
 		
 		setFocusable(true);
 		addComponentListener(this);
@@ -43,8 +44,8 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		WINDOW_WIDTH = getWidth();
 		WINDOW_HEIGHT = getHeight();
 	
-		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize) + 1;
-		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize) + 1;
+		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE) + 1;
+		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE) + 1;
 		
 		Graphics g;
 		
@@ -109,7 +110,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			g.drawLine(mouseX, 0, mouseX, WINDOW_HEIGHT);
 			g.drawLine(0, mouseY, WINDOW_WIDTH, mouseY);
 			g.setColor(new Color(0, 0, 0, 150));
-			g.fillRect(0, 0, VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize + 1, 15);
+			g.fillRect(0, 0, VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE + 1, 15);
 			g.setColor(Color.WHITE);
 			String display1 = "Mouse: [" + mouseX + ", " + mouseY + "]";
 			String display2 = "Region: [" + Region.findClosestIndex(mouseX) + ", " + Region.findClosestIndex(mouseY) + "]";
@@ -142,9 +143,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void setWeight(double value) {
 		
-		VisualizationBase.weight = MyUtils.clampDouble(1.0, value/1000, 0.0);
-		VisualizationBase.VISUALIZATION_GUI.setWeightSlider((int) (VisualizationBase.weight*1000));
-		VisualizationBase.VISUALIZATION_GUI.setWeightValue(VisualizationBase.weight);
+		VisualizationBase.WEIGHT = MyUtils.clampDouble(1.0, value/1000, 0.0);
+		VisualizationBase.VISUALIZATION_GUI.setWeightSlider((int) (VisualizationBase.WEIGHT*1000));
+		VisualizationBase.VISUALIZATION_GUI.setWeightValue(VisualizationBase.WEIGHT);
 		
 	}
 	
@@ -191,18 +192,6 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		g.drawRect(x, y, sizeX, sizeY);
 		
 	}*/
-	
-	public boolean isMouseInApplet() {
-
-		if (0 <= mouse.getX() && WINDOW_WIDTH >= mouse.getX() && 0 <= mouse.getY() && WINDOW_HEIGHT >= mouse.getY()) {
-		
-			return true;
-		
-		}
-	
-		return false;
-	
-	}
 	
 	public void registerChange(Region region, int time, Color color) {
 		
@@ -275,8 +264,8 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void setWindowSize(Dimension d) {
 		
-		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize) + 1;
-		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize) + 1;
+		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE) + 1;
+		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE) + 1;
 		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		regionChangeImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		Dimension newDimension = new Dimension((int) (d.getWidth() + 17), (int) (d.getHeight() + 124));
@@ -288,7 +277,6 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		g = regionChangeImage.getGraphics();
 		g.setColor(new Color(255, 255, 255, 0));
 		g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-		
 		
 	}
 	
@@ -358,7 +346,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			else {
 				
-				Box.setWeights(boxes, VisualizationBase.weight);
+				Box.setWeights(boxes, VisualizationBase.WEIGHT);
 				
 			}
 			
@@ -401,7 +389,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				clearBoxFieldFlags(flags);
 				
 				Pathfind path = new PathfindAStar(new NodeBox(Box.getBoxFromIndex(VisualizationBase.ROW_COLUMN_COUNT/2, VisualizationBase.ROW_COLUMN_COUNT/2), null), new NodeBox(Box.getBoxFromPosition(mouseX, mouseY), null));
-				path.start();
+				path.run();
 				
 			}
 		
@@ -435,7 +423,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (mouse1Down) {
 			
-			Box.setWeights(boxesList, VisualizationBase.weight);
+			Box.setWeights(boxesList, VisualizationBase.WEIGHT);
 			
 			box.setSelected();
 		
@@ -469,9 +457,12 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			try {
 				
-				if (pathfinder.isRunning()) {
+				System.out.println("Test");
+				System.out.println(executor.isPathFinderRunning());
+				
+				if (executor.isPathFinderRunning()) {
 					
-					pathfinder.togglePause();
+					executor.togglePause();
 					
 				} else {
 					
@@ -489,11 +480,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			
-			if (pathfinder != null) {
-				
-				pathfinder.end();
-				
-			}
+			executor.endPathfinding();
 				
 			Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
 			clearBoxFieldFlags(flags);
@@ -504,7 +491,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void runPathfinder() {
 		
-		new Thread(new PathfindExecutor()).start();
+		executor.startPathfinding();
 		
 	}
 	
@@ -551,13 +538,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.weight*1000 + 50), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 + 50), 0));
 			
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.weight*1000 - 50), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 - 50), 0));
 			
 		}
 		
@@ -587,7 +574,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		else {
 		
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.weight*1000 - e.getWheelRotation()*15), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 - e.getWheelRotation()*15), 0));
 			
 		}
 		

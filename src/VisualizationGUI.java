@@ -16,8 +16,8 @@ public class VisualizationGUI extends JFrame {
 	private JLabel closedCounter = new JLabel("| Nodes Closed: 0 ");
 	private JLabel pathLengthCounter = new JLabel("| Path Length: 0 ");
 	private JLabel runTimeCounter = new JLabel("| Run Time: 0 ms");
-	private JSlider weightSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.weight*1000));
-	private JTextField weightValue = new JTextField(Double.toString(VisualizationBase.weight));
+	private JSlider weightSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.WEIGHT*1000));
+	private JTextField weightValue = new JTextField(Double.toString(VisualizationBase.WEIGHT));
 	private JButton runButton = new JButton("Start Simulation");
 	
 	private static final long serialVersionUID = -6664286942946303464L;
@@ -51,7 +51,7 @@ public class VisualizationGUI extends JFrame {
 				
 				double newWeight = weightSlider.getValue();
 				weightValue.setText(Double.toString(newWeight/1000));
-				VisualizationBase.weight = ((double) weightSlider.getValue())/1000;
+				VisualizationBase.WEIGHT = ((double) weightSlider.getValue())/1000;
 				VisualizationBase.VISUALIZATION_WINDOW.requestFocus();
 				
 			}
@@ -70,7 +70,7 @@ public class VisualizationGUI extends JFrame {
 				
 				double newWeight = Math.max(0.0, Math.min(10, Double.parseDouble(weightValue.getText())));
 				weightSlider.setValue((int) (newWeight*1000));
-				VisualizationBase.weight = ((double) weightSlider.getValue())/1000;
+				VisualizationBase.WEIGHT = ((double) weightSlider.getValue())/1000;
 				VisualizationBase.VISUALIZATION_WINDOW.requestFocus();
 				
 			}
@@ -336,8 +336,8 @@ public class VisualizationGUI extends JFrame {
 		
 		pack();
 		
-		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize + 17);
-		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.boxXYSize + 125);
+		int sizeX = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE + 17);
+		int sizeY = (int) (VisualizationBase.ROW_COLUMN_COUNT*VisualizationBase.BOX_XY_SIZE + 125);
 		setSize(sizeX, sizeY);
 		
 	}

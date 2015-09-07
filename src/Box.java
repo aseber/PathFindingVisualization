@@ -34,8 +34,8 @@ public class Box {
 		QUEUED(new Color(155, 155, 155), "Queued"),
 		SELECTED(new Color(100, 100, 255), "Selected");
 		
-		private Color color;
-		private String name;
+		private final Color color;
+		private final String name;
 		
 		private flags(Color inputColor, String inputName) {
 			
@@ -157,8 +157,8 @@ public class Box {
 			
 			for (int column = 0; column < VisualizationBase.ROW_COLUMN_COUNT; column++) {
 			
-				int x = (int) (row*(VisualizationBase.boxXYSize));
-				int y = (int) (column*(VisualizationBase.boxXYSize));
+				int x = (int) (row*(VisualizationBase.BOX_XY_SIZE));
+				int y = (int) (column*(VisualizationBase.BOX_XY_SIZE));
 				new Box(x, y, row, column, flags.STANDARD);
 			
 			}
@@ -258,21 +258,21 @@ public class Box {
 		
 		else if (cornerFlag == corners.TOP_RIGHT) {
 			
-			point.setLocation(physicalPosition.getX() + VisualizationBase.boxXYSize, physicalPosition.getY() + 0);
+			point.setLocation(physicalPosition.getX() + VisualizationBase.BOX_XY_SIZE, physicalPosition.getY() + 0);
 			return point;
 			
 		}
 		
 		else if (cornerFlag == corners.BOTTOM_LEFT) {
 			
-			point.setLocation(physicalPosition.getX() + 0, physicalPosition.getY() + VisualizationBase.boxXYSize);
+			point.setLocation(physicalPosition.getX() + 0, physicalPosition.getY() + VisualizationBase.BOX_XY_SIZE);
 			return point;
 			
 		}
 		
 		else if (cornerFlag == corners.BOTTOM_RIGHT) {
 			
-			point.setLocation(physicalPosition.getX() + VisualizationBase.boxXYSize, physicalPosition.getY() + VisualizationBase.boxXYSize);
+			point.setLocation(physicalPosition.getX() + VisualizationBase.BOX_XY_SIZE, physicalPosition.getY() + VisualizationBase.BOX_XY_SIZE);
 			return point;
 			
 		}
@@ -283,7 +283,7 @@ public class Box {
 	
 	public Point getCenterPoint() {
 		
-		return new Point((int) (physicalPosition.x + Math.floor((double) VisualizationBase.boxXYSize/2.0)), (int) (physicalPosition.y + (Math.floor((double) VisualizationBase.boxXYSize/2.0))));
+		return new Point((int) (physicalPosition.x + Math.floor((double) VisualizationBase.BOX_XY_SIZE/2.0)), (int) (physicalPosition.y + (Math.floor((double) VisualizationBase.BOX_XY_SIZE/2.0))));
 		
 	}
 	
@@ -325,8 +325,8 @@ public class Box {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) VisualizationBase.boxXYSize;
-		int sizeY = (int) VisualizationBase.boxXYSize;
+		int sizeX = (int) VisualizationBase.BOX_XY_SIZE;
+		int sizeY = (int) VisualizationBase.BOX_XY_SIZE;
 		Color color = this.getActiveColor();
 		
 		g.setColor(color);
@@ -365,8 +365,8 @@ public class Box {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) VisualizationBase.boxXYSize;
-		int sizeY = (int) VisualizationBase.boxXYSize;
+		int sizeX = (int) VisualizationBase.BOX_XY_SIZE;
+		int sizeY = (int) VisualizationBase.BOX_XY_SIZE;
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g.setColor(color);
@@ -484,7 +484,7 @@ public class Box {
 		
 		HashSet<Box> boxSet = new HashSet<Box>();
 		Point center = initialBox.getCenterPoint();
-		double size = VisualizationBase.boxXYSize;
+		double size = VisualizationBase.BOX_XY_SIZE;
 		double radiusSq = Math.pow(radius, 2.0);
 		
 		HashSet<Box> roughIntersectingBoxes = initialBox.findNeighboringBoxes((int) Math.ceil(radius/(size - 1)));
@@ -624,7 +624,7 @@ public class Box {
 	public static int findClosestIndex(int pos) {
 		
 		int count = VisualizationBase.ROW_COLUMN_COUNT;
-		double interval = VisualizationBase.boxXYSize;
+		double interval = VisualizationBase.BOX_XY_SIZE;
 		
 		return MyUtils.clampInt(count - 1, (int) Math.floor(pos/interval), 0);
 		

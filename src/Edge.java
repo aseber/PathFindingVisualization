@@ -57,13 +57,13 @@ public class Edge {
 		
 		if (direction == directions.DOWN) {
 			
-			endPosition.setLocation(endPosition.getX(), endPosition.getY() + length*VisualizationBase.boxXYSize);
+			endPosition.setLocation(endPosition.getX(), endPosition.getY() + length*VisualizationBase.BOX_XY_SIZE);
 			
 		}
 		
 		if (direction == directions.RIGHT) {
 			
-			endPosition.setLocation(endPosition.getX() + length*VisualizationBase.boxXYSize, endPosition.getY());
+			endPosition.setLocation(endPosition.getX() + length*VisualizationBase.BOX_XY_SIZE, endPosition.getY());
 			
 		}
 		

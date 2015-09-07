@@ -3,8 +3,32 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
-public abstract class Pathfind extends Thread { // Abstract class that all of the pathfinding algorithms are based on
+public abstract class Pathfind implements Runnable { // Abstract class that all of the pathfinding algorithms are based on
 
+	public static enum algorithms {
+		
+		ASTAR ("A-Star") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}},
+		DIJKSTRA ("Dijkstra") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}},
+		CUSTOM ("Custom") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}};
+		
+		private final String name;
+		
+		private algorithms(String newName) {
+			
+			name = newName;
+			
+		}
+		
+		abstract Pathfind pathfind(NodeBox startNode, NodeBox endNode);
+		
+		public String toString() {
+			
+			return name;
+			
+		}
+		
+	};
+	
 	protected NodeBox startNode;
 	protected NodeBox endNode;
 	protected double expandedCounter;
@@ -38,12 +62,31 @@ public abstract class Pathfind extends Thread { // Abstract class that all of th
 		
 	}
 	
-	@Override
 	public final void run() {
 		
 		VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
 		running = true;
 		searchForPath();
+		
+	}
+	
+	public final void checkWait() {
+		
+		try {
+			
+			while (pause) {
+				
+				this.wait(); // We can pause the simulation now!
+				
+			}
+			
+			if (VisualizationBase.SLEEP_TIMER > 0) {
+			
+				wait(VisualizationBase.SLEEP_TIMER); // Sleep timer
+				
+			}
+			
+		} catch (InterruptedException e) {}
 		
 	}
 	

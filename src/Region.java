@@ -26,7 +26,7 @@ public class Region {
 
 	public Region(HashSet<Box> inputBoxes, Point phyPos, Point winPos) {
 		
-		if (inputBoxes.size() > Math.pow(VisualizationBase.regionSize, 2.0)) {
+		if (inputBoxes.size() > Math.pow(VisualizationBase.REGION_SIZE, 2.0)) {
 			
 			throw new ArrayIndexOutOfBoundsException("Tried to fit too many boxes in a region. Change the maximum region size.");
 			
@@ -69,7 +69,7 @@ public class Region {
 	
 	public static void initializeStaticVariables() {
 		
-		int size = (int) Math.ceil(((double) VisualizationBase.ROW_COLUMN_COUNT)/((double) VisualizationBase.regionSize));
+		int size = (int) Math.ceil(((double) VisualizationBase.ROW_COLUMN_COUNT)/((double) VisualizationBase.REGION_SIZE));
 		edgeList = new ArrayList<Edge>();
 		regionMap = new RegionArrayList[size][size];
 		
@@ -107,7 +107,7 @@ public class Region {
 		g2.setComposite(composite);
 		
 		g.setColor(color);
-		g.fillRect(p1.x, p1.y, VisualizationBase.boxXYSize*VisualizationBase.regionSize, VisualizationBase.boxXYSize*VisualizationBase.regionSize);
+		g.fillRect(p1.x, p1.y, VisualizationBase.BOX_XY_SIZE*VisualizationBase.REGION_SIZE, VisualizationBase.BOX_XY_SIZE*VisualizationBase.REGION_SIZE);
 		
 		VisualizationBase.VISUALIZATION_WINDOW.repaint();
 		
@@ -140,7 +140,7 @@ public class Region {
 	public static int findClosestIndex(int pos) {
 		
 		int count = regionMap.length;
-		double interval = VisualizationBase.regionSize*VisualizationBase.boxXYSize;
+		double interval = VisualizationBase.REGION_SIZE*VisualizationBase.BOX_XY_SIZE;
 		
 		return MyUtils.clampInt(count - 1, (int) Math.floor(((double) pos)/interval), 0);
 		
@@ -273,8 +273,8 @@ public class Region {
 	
 	public synchronized static void createRegionFromIndex(int x, int y) {
 		
-		Point p1 = new Point(x*VisualizationBase.regionSize, y*VisualizationBase.regionSize);
-		Point p2 = new Point((x + 1)*VisualizationBase.regionSize - 1, (y + 1)*VisualizationBase.regionSize - 1);
+		Point p1 = new Point(x*VisualizationBase.REGION_SIZE, y*VisualizationBase.REGION_SIZE);
+		Point p2 = new Point((x + 1)*VisualizationBase.REGION_SIZE - 1, (y + 1)*VisualizationBase.REGION_SIZE - 1);
 		HashSet<Box> availableBoxes = Box.boxesInIndicesSquare(p1, p2);
 		HashSet<Box> barrierBoxes = new HashSet<Box>();
 				
@@ -293,7 +293,7 @@ public class Region {
 				
 		while (iterator.hasNext()) {
 					
-			Point physicalLocation = new Point(p1.x*VisualizationBase.boxXYSize, p1.y*VisualizationBase.boxXYSize);
+			Point physicalLocation = new Point(p1.x*VisualizationBase.BOX_XY_SIZE, p1.y*VisualizationBase.BOX_XY_SIZE);
 			Point windowLocation = new Point(x, y);
 			HashSet<Box> island = Box.floodFill(iterator.next(), availableBoxes);
 			new Region(island, physicalLocation, windowLocation);
@@ -313,7 +313,7 @@ public class Region {
 	
 	public synchronized static void createRegionField() {
 		
-		int regionXYSize = (int) Math.ceil(((double) VisualizationBase.ROW_COLUMN_COUNT)/((double) VisualizationBase.regionSize));
+		int regionXYSize = (int) Math.ceil(((double) VisualizationBase.ROW_COLUMN_COUNT)/((double) VisualizationBase.REGION_SIZE));
 		
 		for (int row = 0; row < regionXYSize; row++) {
 			

@@ -73,9 +73,9 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		HValue = new JTextField();
 		JLabel weightLabel = new JLabel();
 		weightValue = new JTextField();
-		GValueSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.gModifier*1000));
-		HValueSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.hModifier*1000));
-		weightSlider = new JSlider(JSlider.HORIZONTAL, 0, 10000, (int) (VisualizationBase.weightModifier*1000));
+		GValueSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.CUSTOM_G_MODIFIER*1000));
+		HValueSlider = new JSlider(JSlider.HORIZONTAL, 0, 1000, (int) (VisualizationBase.CUSTOM_H_MODIFIER*1000));
+		weightSlider = new JSlider(JSlider.HORIZONTAL, 0, 10000, (int) (VisualizationBase.WEIGHT_MODIFIER*1000));
 		hierarchicalPathfinding = new JCheckBox("Enable Hierarchical Pathfinding");
 		JButton CancelButton = new JButton();
 		JButton AcceptButton = new JButton();
@@ -221,15 +221,15 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		contentPanel.setLayout(new FormLayout("3px, 100px, 5px, 100px, 5px, 100px, 5px", "25px"));
 		
 		astarButton.addActionListener(radioActionListener);
-		if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.ASTAR) {astarButton.setSelected(true);}
+		if (VisualizationBase.CURRENT_ALGORITHM == Pathfind.algorithms.ASTAR) {astarButton.setSelected(true);}
 		contentPanel.add(astarButton, CC.xywh(2, 1, 1, 1));
 		
 		dijkstrasButton.addActionListener(radioActionListener);
-		if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.DIJKSTRA) {dijkstrasButton.setSelected(true);}
+		if (VisualizationBase.CURRENT_ALGORITHM == Pathfind.algorithms.DIJKSTRA) {dijkstrasButton.setSelected(true);}
 		contentPanel.add(dijkstrasButton, CC.xywh(4, 1, 1, 1));
 		
 		customButton.addActionListener(radioActionListener);
-		if (VisualizationBase.CURRENT_ALGORITHM == VisualizationBase.CUSTOM) {customButton.setSelected(true);}
+		if (VisualizationBase.CURRENT_ALGORITHM == Pathfind.algorithms.CUSTOM) {customButton.setSelected(true);}
 		contentPanel.add(customButton, CC.xywh(6, 1, 1, 1));
 		
 		customPanel.setLayout(new FormLayout("3px, 50px, 5px, 100px, 5px, 100px, 5px, 50px, 5px", "5px, 25px, 5px, 25px"));
@@ -240,11 +240,11 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		HLabel.setText("H Value");
 		customPanel.add(HLabel, CC.xywh(2, 4, 1, 1));
 		
-		GValue.setText(Double.toString(VisualizationBase.gModifier));
+		GValue.setText(Double.toString(VisualizationBase.CUSTOM_G_MODIFIER));
 		GValue.addActionListener(actionListener);
 		customPanel.add(GValue, CC.xywh(8, 2, 1, 1));
 		
-		HValue.setText(Double.toString(VisualizationBase.hModifier));
+		HValue.setText(Double.toString(VisualizationBase.CUSTOM_H_MODIFIER));
 		HValue.addActionListener(actionListener);
 		customPanel.add(HValue, CC.xywh(8, 4, 1, 1));
 		
@@ -259,14 +259,14 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		weightLabel.setText("Weight");
 		contentPanel2.add(weightLabel, CC.xywh(2, 2, 1, 1));
 		
-		weightValue.setText(Double.toString(VisualizationBase.weightModifier));
+		weightValue.setText(Double.toString(VisualizationBase.WEIGHT_MODIFIER));
 		weightValue.addActionListener(actionListener);
 		contentPanel2.add(weightValue, CC.xywh(8, 2, 1, 1));
 		
 		weightSlider.addChangeListener(sliderListener);
 		contentPanel2.add(weightSlider, CC.xywh(4, 2, 3, 1));
 		
-		hierarchicalPathfinding.setSelected(VisualizationBase.hierarchicalPathfinding);
+		hierarchicalPathfinding.setSelected(VisualizationBase.HIERARCHICAL_PATHFINDING);
 		contentPanel2.add(hierarchicalPathfinding, CC.xywh(2, 4, 6, 1));
 		
 		CancelButton.setText("Cancel");
@@ -295,7 +295,7 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		
 		AlgorithmDialogGUI.add(contentPanel, BorderLayout.NORTH);
 		AlgorithmDialogGUI.add(customPanel, BorderLayout.CENTER);
-		if (VisualizationBase.CURRENT_ALGORITHM != VisualizationBase.CUSTOM) {customPanel.setVisible(false);}
+		if (VisualizationBase.CURRENT_ALGORITHM != Pathfind.algorithms.CUSTOM) {customPanel.setVisible(false);}
 		AlgorithmDialogGUI.add(contentPanel2, BorderLayout.SOUTH);
 		contentPane.add(AlgorithmDialogGUI, BorderLayout.CENTER);
 		pack();
@@ -315,28 +315,28 @@ public class DialogAlgorithm extends JDialog implements KeyListener {
 		
 		if (astarButton.isSelected()) {
 			
-			VisualizationBase.CURRENT_ALGORITHM = VisualizationBase.ASTAR;
+			VisualizationBase.CURRENT_ALGORITHM = Pathfind.algorithms.ASTAR;
 			
 		} else if (dijkstrasButton.isSelected()) {
 			
-			VisualizationBase.CURRENT_ALGORITHM = VisualizationBase.DIJKSTRA;
+			VisualizationBase.CURRENT_ALGORITHM = Pathfind.algorithms.DIJKSTRA;
 			
 		} else if (customButton.isSelected()) {
 			
-			VisualizationBase.CURRENT_ALGORITHM = VisualizationBase.CUSTOM;
+			VisualizationBase.CURRENT_ALGORITHM = Pathfind.algorithms.CUSTOM;
 			
 			double g = GValueSlider.getValue();
 			double h = HValueSlider.getValue();
 			
-			VisualizationBase.gModifier = g/1000;
-			VisualizationBase.hModifier = h/1000;
+			VisualizationBase.CUSTOM_G_MODIFIER = g/1000;
+			VisualizationBase.CUSTOM_H_MODIFIER = h/1000;
 			
 		}
 		
-		VisualizationBase.hierarchicalPathfinding = hierarchicalPathfinding.isSelected();
+		VisualizationBase.HIERARCHICAL_PATHFINDING = hierarchicalPathfinding.isSelected();
 		
 		double weight = weightSlider.getValue();
-		VisualizationBase.weightModifier = weight/1000;
+		VisualizationBase.WEIGHT_MODIFIER = weight/1000;
 		
 		this.dispose();
 		
