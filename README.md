@@ -4,6 +4,12 @@ This program visualizes common map traversal algorithms while allowing the user 
 
 ![](http://imgur.com/3gTc1F2.png)
 
+## Videos
+I have posted a few videos representing my program on YouTube:
+[Hierarchical Pathfinding](https://www.youtube.com/watch?v=k-HOcrFSQwI)
+[Dijkstra's Algorithm Pathfinding](https://www.youtube.com/watch?v=YmZVbLc1b04)
+[A* Pathfinding](https://www.youtube.com/watch?v=Wxqbyja6Anc)
+
 **In order to compile this program, you will need to include the libraries in the /libs/ folder**
 
 ## Algorithms represented:
