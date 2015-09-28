@@ -23,6 +23,7 @@ This program visualizes common map traversal algorithms while allowing the user 
 * Mousescroll down - Decreases the brush size for block coloring
 * Shift + Mousescroll up - Increase block weight
 * Shift + Mousescroll down - Decrease block weight
+* Escape - Clears the blocks colored by the algorithm running. Does not remove 'Weighted blocks', 'Barriers', 'Start', or 'End'
 
 ## Settings menu
 * Modify Algorithm dialog:
