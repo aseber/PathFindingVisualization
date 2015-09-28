@@ -8,7 +8,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	public static enum algorithms {
 		
 		ASTAR ("A-Star") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}},
-		DIJKSTRA ("Dijkstra") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}},
+		DIJKSTRA ("Dijkstra") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindDijkstra(startNode, endNode);}},
 		CUSTOM ("Custom") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}};
 		
 		private final String name;

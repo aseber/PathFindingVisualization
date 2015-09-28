@@ -2,13 +2,23 @@
 
 This program visualizes common map traversal algorithms while allowing the user to modify the map with varying weights
 
+![](http://imgur.com/3gTc1F2)
+
 **In order to compile this program, you will need to include the libraries in the /libs/ folder**
 
 ## Algorithms represented:
-* Dijkstra's Algorithm
 * A*
-* Custom (Used for testing)
+* Dijkstra's Algorithm
 * Hierarchical Pathfinding
+
+### A*
+![](http://imgur.com/ssBVybs)
+
+### Dijkstra's Algorithm
+![](http://imgur.com/TCB87vB)
+
+### Hierarchical Pathfinding
+![](http://imgur.com/t93dWbt)
 
 ## Controls
 * Left click - Colors in a block based on the current weight value
@@ -47,6 +57,9 @@ Common to most pathfinding algorithms is the concept of weighted values. You can
 
 Weighting is represented on the screen by block color. Values of zero produce a very light grey color, and values of (0, 1) become increasingly dark. Values of 1.0 produce a extremely dark grey that is noticeably different than a value of 0.99
 
+### A graph with only 'Barriers'
+![](http://imgur.com/cRUfzab)
+
 When you run the program, you will notice a few more colors jump out at you.
 * Blue blocks are blocks located along the most optimal path found
 * Off color grey blocks are blocks added to the "Open" queue, but not processed
@@ -54,6 +67,9 @@ When you run the program, you will notice a few more colors jump out at you.
 
 ## Hierarchical Pathfinding
 Hierarchical pathfinding is an interesting way of calculating paths. I have implemented it by developing a system of 'Regions' where regions are considered connected if they share a common edge. Regions are bounded to a specific region of the map determined by a size variable in the Window menu. Multiple regions may coexist in the same area, but they must be disconnected by a 'Barrier', or a block with a weight of 1.0.
+
+### An example of how regions work. This one has been split in half by a barrier
+![](http://imgur.com/UUPB7KT)
 
 Using the concept of regions, we can first pathfind through a region and then, based on the regions from beginning to end, limit the actual algorithms to run only in the space determined by the hierarchical approach.
 
@@ -63,6 +79,9 @@ This system is not necessary optimal, but I think it was an interesting experime
 
 ## Change detection
 When running the program or adding 'Barriers' to the grid, you may notice that a square flashes a yellow color. This was included to represent region updates. A similar effect occurs when you run the hierarchical pathfinding but instead of flashing blue, it flashes yellow to show the regions that the pathfinding considers on the path from 'start' to 'end'
+
+### Adding barriers rebuild regions
+![](http://imgur.com/4CNYVyz)
 
 ## Running the program
 Running the program is as simple as choosing a 'start' and 'end' box and then pressing the "Start Simulation" button or pressing the spacebar. You can pause the simulation midway by again pressing the spacebar. You can also modify the speed at which the algorithm runs by setting the sleep timer in the settings menu.
