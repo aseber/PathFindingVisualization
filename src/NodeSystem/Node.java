@@ -1,3 +1,5 @@
+package NodeSystem;
+
 public abstract class Node { // Abstract class for RegionNode and BoxNode
 
 	protected Node parentNode;

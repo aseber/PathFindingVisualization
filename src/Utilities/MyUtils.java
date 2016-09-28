@@ -1,3 +1,5 @@
+package Utilities;
+
 import java.awt.Point;
 
 public class MyUtils {

@@ -95,5 +95,5 @@ Running the program is as simple as choosing a 'start' and 'end' box and then pr
 At the top right of the program you will notice a set of numbers. These numbers are very important in determining the efficiency of the algorithm
 * Nodes Open - Shows the number of nodes added to the "Open" queue
 * Nodes Closed - Shows the number of nodes added to the "Closed" queue
-* Path length - Shows the length of the most optimal path found.
+* PathfindingAlgorithms.Path length - Shows the length of the most optimal path found.
 * Run Time - Shows the running time of the algorithm
