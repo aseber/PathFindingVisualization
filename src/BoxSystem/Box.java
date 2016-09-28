@@ -17,16 +17,16 @@ public class Box implements IDistance {
 	// A box can have a weight between 0.0 and 1.0, where 0.0 is considered "open" and 1.0 a "full barrier", values inbetween
 	// are considered weighted and change the way A-Star and Dijkstras algorithm rate each box
 	
-	public static enum corners {
+	public enum corners {
 		
 		TOP_LEFT,
 		TOP_RIGHT,
 		BOTTOM_LEFT,
-		BOTTOM_RIGHT;
-		
-	}
+		BOTTOM_RIGHT
+
+    }
 	
-	public static enum flags {
+	public enum flags {
 		
 		STANDARD(new Color(200, 200, 200), "Standard"),
 		SEARCHED(new Color(200, 0, 0), "Searched"),
@@ -41,7 +41,7 @@ public class Box implements IDistance {
 		private final Color color;
 		private final String name;
 		
-		private flags(Color inputColor, String inputName) {
+		flags(Color inputColor, String inputName) {
 			
 			color = inputColor;
 			name = inputName;
@@ -62,12 +62,12 @@ public class Box implements IDistance {
 		
 	}
 	
-	static protected Box selectedBox;
+	private static Box selectedBox;
 	static public Box startBox;
 	static public Box endBox;
 	
 	public Point physicalPosition = new Point();
-	public Point windowPosition = new Point();
+	private Point windowPosition = new Point();
 	private double weight = 0.0;
 	private Color color = flags.STANDARD.getColor();
 	private boolean selected = false;
@@ -77,7 +77,7 @@ public class Box implements IDistance {
 	
 	private static Box[][] boxMap;
 	
-	public Box(int x, int y, int window_X_Index, int window_Y_Index, flags flag) {
+	private Box(int x, int y, int window_X_Index, int window_Y_Index, flags flag) {
 		
 		this.physicalPosition.setLocation(x, y);
 		this.windowPosition.setLocation(window_X_Index, window_Y_Index);
@@ -101,7 +101,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	public void setWeight(double newWeight) {
+	private void setWeight(double newWeight) {
 		
 		weight = Math.max(0.0, Math.min(1.0, newWeight));
 		int value = (int) (200 - 150*weight);
@@ -130,9 +130,9 @@ public class Box implements IDistance {
 		
 	}
 	
-	public void setRegion(Region r) {
+	public void setRegion(Region region) {
 		
-		region = r;
+		region = region;
 		
 	}
 	
@@ -160,8 +160,8 @@ public class Box implements IDistance {
 			
 			for (int column = 0; column < ROW_COLUMN_COUNT; column++) {
 			
-				int x = (int) (row*(BOX_XY_SIZE));
-				int y = (int) (column*(BOX_XY_SIZE));
+				int x = row*(BOX_XY_SIZE);
+				int y = column*(BOX_XY_SIZE);
 				new Box(x, y, row, column, flags.STANDARD);
 			
 			}
@@ -170,7 +170,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	public void delete() {
+	private void delete() {
 		
 		edges = null;
 		clearRegion();
@@ -189,9 +189,9 @@ public class Box implements IDistance {
 		
 	}
 	
-	public synchronized static Box getBoxFromIndex(Point p1) {
+	public synchronized static Box getBoxFromIndex(Point point) {
 		
-		return boxMap[p1.x][p1.y];
+		return getBoxFromIndex(point.x, point.y);
 		
 	}
 	
@@ -225,7 +225,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	public void edgeInitialization() {
+	private void edgeInitialization() {
 		
 		Object[][] offset = {{corners.TOP_LEFT, Edge.directions.RIGHT}, {corners.TOP_LEFT, Edge.directions.DOWN}, {corners.TOP_RIGHT, Edge.directions.DOWN}, {corners.BOTTOM_LEFT, Edge.directions.RIGHT}}; // Use HashMap but done wrong?
 		
@@ -249,7 +249,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	public Point getPhysicalCorner(corners cornerFlag) {
+	private Point getPhysicalCorner(corners cornerFlag) {
 		
 		Point point = new Point();
 		
@@ -284,13 +284,13 @@ public class Box implements IDistance {
 		
 	}
 	
-	public Point getCenterPoint() {
+	private Point getCenterPoint() {
 		
 		return new Point((int) (physicalPosition.x + Math.floor((double) BOX_XY_SIZE/2.0)), (int) (physicalPosition.y + (Math.floor((double) BOX_XY_SIZE/2.0))));
 		
 	}
 	
-	public Color getActiveColor() {
+	private Color getActiveColor() {
 		
 		if (selected) {
 			
@@ -328,8 +328,8 @@ public class Box implements IDistance {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) BOX_XY_SIZE;
-		int sizeY = (int) BOX_XY_SIZE;
+		int sizeX = BOX_XY_SIZE;
+		int sizeY = BOX_XY_SIZE;
 		Color color = this.getActiveColor();
 		
 		g.setColor(color);
@@ -368,8 +368,8 @@ public class Box implements IDistance {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) BOX_XY_SIZE;
-		int sizeY = (int) BOX_XY_SIZE;
+		int sizeX = BOX_XY_SIZE;
+		int sizeY = BOX_XY_SIZE;
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g.setColor(color);
@@ -700,16 +700,10 @@ public class Box implements IDistance {
 	}
 	
 	public static boolean beginningAndEndExist() {
-		
-		if (startBox != null && endBox != null) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
+
+        return startBox != null && endBox != null;
+
+    }
 	
 	public static void checkBeginningAndEndState() {
 		
@@ -802,28 +796,16 @@ public class Box implements IDistance {
 	}
 	
 	public boolean isFullBarrier() {
-		
-		if (flag == flags.FULL_BARRIER) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
+
+        return flag == flags.FULL_BARRIER;
+
+    }
 	
 	public boolean isPartialBarrier() {
-		
-		if (flag == flags.PARTIAL_BARRIER) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
+
+        return flag == flags.PARTIAL_BARRIER;
+
+    }
 	
 	public double distanceFrom(IDistance distance) {
 
@@ -838,32 +820,14 @@ public class Box implements IDistance {
 
 	}
 	
-	public double euclideanDistanceSquared(Box box) {
-		
-		return MyUtils.euclideanDistanceSquared(this.windowPosition, box.windowPosition);
-		
-	}
-	
-	public double manhattanDistance(Box box) {
-		
-		return MyUtils.manhattanDistance(this.windowPosition, box.windowPosition);
-		
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		
 		Box box = (Box) o;
-		
-		if (this.windowPosition.getX() == box.windowPosition.getX() && this.windowPosition.getY() == box.windowPosition.getY()) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
+
+        return this.windowPosition.getX() == box.windowPosition.getX() && this.windowPosition.getY() == box.windowPosition.getY();
+
+    }
 
 	
 	public String toString() {

@@ -340,8 +340,8 @@ public class VisualizationGUI extends JFrame {
 		
 		pack();
 		
-		int sizeX = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE + 17);
-		int sizeY = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE + 125);
+		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 17;
+		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 125;
 		setSize(sizeX, sizeY);
 		
 	}

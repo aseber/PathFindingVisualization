@@ -80,15 +80,9 @@ public class RegionEvent implements Runnable { // class that executes the region
 	public boolean equals(Object o) {
 		
 		RegionEvent otherEvent = (RegionEvent) o;
-		
-		if (region.getWindowPosition().equals(otherEvent.getRegion().getWindowPosition()) && color.equals(otherEvent.getColor())) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
+
+		return region.getWindowPosition().equals(otherEvent.getRegion().getWindowPosition()) && color.equals(otherEvent.getColor());
+
 	}
 	
 }

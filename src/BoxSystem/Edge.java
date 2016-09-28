@@ -13,12 +13,12 @@ public class Edge {
 	// Powerful class that allows me to build the region system. NodeSystem.Node the the hashcode is created using Guava
 	// Also note that the box has no input in the hashcode, meaning that we allow for collisions between boxes with the same edge
 	
-	public static enum directions {
+	public enum directions {
 		
 		DOWN,
-		RIGHT;
-		
-	}
+		RIGHT
+
+    }
 	
 	HashFunction hf = Hashing.md5();
 	
@@ -85,16 +85,10 @@ public class Edge {
 	public boolean equals(Object o) {
 		
 		Edge otherEdge = (Edge) o;
-		
-		if (this.getHash().equals(otherEdge.getHash())) {
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
+
+        return this.getHash().equals(otherEdge.getHash());
+
+    }
 	
 	@Override
 	public int hashCode() {

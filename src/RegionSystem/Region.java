@@ -20,8 +20,8 @@ public class Region implements IDistance {
 	
 	private Point physicalPosition = new Point();
 	private Point windowPosition = new Point();
-	private HashSet<Box> boxes = new HashSet<Box>();
-	private HashSet<Edge> edges = new HashSet<Edge>();
+	private HashSet<Box> boxes = new HashSet<>();
+	private HashSet<Edge> edges = new HashSet<>();
 	private Point centerPosition = new Point();
 	private HashSet<Region> neighboringRegions = new HashSet<Region>();
 	

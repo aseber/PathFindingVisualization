@@ -68,7 +68,7 @@ public class DialogWindow extends JDialog {
 		boxSizeLabel.setText("BoxSystem.Box Row/Column Size");
 		contentPanel.add(boxSizeLabel, CC.xywh(2, 4, 1, 1));
 
-		boxSizeField.setText(Integer.toString((int) (BOX_XY_SIZE)));
+		boxSizeField.setText(Integer.toString(BOX_XY_SIZE));
 		contentPanel.add(boxSizeField, CC.xywh(4, 4, 1, 1));
 
 		regionSizeField.setText(Integer.toString(REGION_SIZE));
@@ -124,7 +124,7 @@ public class DialogWindow extends JDialog {
 		int sizeInt = Integer.parseInt(boxSizeField.getText());
 		BOX_XY_SIZE = sizeInt;
 		REGION_SIZE = Integer.parseInt(regionSizeField.getText());
-		Dimension windowSize = new Dimension((int) (ROW_COLUMN_COUNT* BOX_XY_SIZE), (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE));
+		Dimension windowSize = new Dimension(ROW_COLUMN_COUNT* BOX_XY_SIZE, ROW_COLUMN_COUNT* BOX_XY_SIZE);
 		VISUALIZATION_WINDOW.setWindowSize(windowSize);
 		Box.initializeStaticVariables();
 		Region.initializeStaticVariables();

@@ -13,7 +13,7 @@ import static Settings.WindowSettings.VISUALIZATION_GUI;
 
 public abstract class Pathfind implements Runnable { // Abstract class that all of the pathfinding algorithms are based on
 
-	public static enum algorithms {
+	public enum algorithms {
 		
 		ASTAR ("A-Star") {Pathfind pathfind(INode startNode, INode endNode) {return new PathfindAStar(startNode, endNode);}},
 		DIJKSTRA ("Dijkstra") {Pathfind pathfind(INode startNode, INode endNode) {return new PathfindDijkstra(startNode, endNode);}},
@@ -21,7 +21,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 		private final String name;
 		
-		private algorithms(String newName) {
+		algorithms(String newName) {
 			
 			name = newName;
 			
@@ -35,9 +35,9 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 			
 		}
 		
-	};
-	
-	protected INode startNode;
+	}
+
+    protected INode startNode;
 	protected INode endNode;
 	protected double expandedCounter;
 	protected final double EXPANDED_COUNTER_HARD_CAP = 100000;

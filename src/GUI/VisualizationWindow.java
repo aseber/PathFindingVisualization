@@ -50,8 +50,8 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		WINDOW_WIDTH = getWidth();
 		WINDOW_HEIGHT = getHeight();
 	
-		int sizeX = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
-		int sizeY = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
+		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
+		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
 		
 		Graphics g;
 		
@@ -270,8 +270,8 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void setWindowSize(Dimension d) {
 		
-		int sizeX = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
-		int sizeY = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
+		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
+		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
 		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		regionChangeImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		Dimension newDimension = new Dimension((int) (d.getWidth() + 17), (int) (d.getHeight() + 124));
