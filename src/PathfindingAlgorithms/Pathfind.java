@@ -1,6 +1,7 @@
 package PathfindingAlgorithms;
 
 import BoxSystem.Box;
+import NodeSystem.INode;
 import NodeSystem.Node;
 import NodeSystem.NodeBox;
 
@@ -9,13 +10,16 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import static Settings.WindowSettings.SLEEP_TIMER;
+import static Settings.WindowSettings.VISUALIZATION_GUI;
+
 public abstract class Pathfind implements Runnable { // Abstract class that all of the pathfinding algorithms are based on
 
 	public static enum algorithms {
 		
-		ASTAR ("A-Star") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}},
-		DIJKSTRA ("Dijkstra") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindDijkstra(startNode, endNode);}},
-		CUSTOM ("Custom") {Pathfind pathfind(NodeBox startNode, NodeBox endNode) {return new PathfindAStar(startNode, endNode);}};
+		ASTAR ("A-Star") {Pathfind pathfind(INode startNode, INode endNode) {return new PathfindAStar(startNode, endNode);}},
+		DIJKSTRA ("Dijkstra") {Pathfind pathfind(INode startNode, INode endNode) {return new PathfindDijkstra(startNode, endNode);}},
+		CUSTOM ("Custom") {Pathfind pathfind(INode startNode, INode endNode) {return new PathfindAStar(startNode, endNode);}};
 		
 		private final String name;
 		
@@ -25,7 +29,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 			
 		}
 		
-		abstract Pathfind pathfind(NodeBox startNode, NodeBox endNode);
+		abstract Pathfind pathfind(INode startNode, INode endNode);
 		
 		public String toString() {
 			
@@ -35,8 +39,8 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 	};
 	
-	protected NodeBox startNode;
-	protected NodeBox endNode;
+	protected INode startNode;
+	protected INode endNode;
 	protected double expandedCounter;
 	protected final double EXPANDED_COUNTER_HARD_CAP = 100000;
 	protected boolean running = false;
@@ -44,11 +48,11 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	protected boolean pathFound = false;
 	protected HashSet<Box> allowedBoxes;
 	protected BestPathComparator comparator = new BestPathComparator();
-	protected PriorityQueue<NodeBox> open = new PriorityQueue<NodeBox>(10, comparator);
-	protected PriorityQueue<NodeBox> closed = new PriorityQueue<NodeBox>(10, comparator);
-	protected NodeBox endOfPath = null;
+	protected PriorityQueue<INode> open = new PriorityQueue<>(10, comparator);
+	protected PriorityQueue<INode> closed = new PriorityQueue<>(10, comparator);
+	protected INode endOfPath = null;
 	
-	public Pathfind(NodeBox startNode, NodeBox endNode, double f) {
+	public Pathfind(INode startNode, INode endNode, double f) {
 		
 		this.startNode = startNode;
 		this.endNode = endNode;
@@ -58,9 +62,9 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	
 	//static abstract class BestPathComparator implements Comparator<NodeSystem.Node> {};
 	
-	static class BestPathComparator implements Comparator<Node> {
+	static class BestPathComparator implements Comparator<INode> {
 		
-		public int compare(Node node, Node node2) {
+		public int compare(INode node, INode node2) {
 			
 			return Double.compare(node.getF(), node2.getF());
 			
@@ -70,7 +74,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	
 	public final void run() {
 		
-		VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+		VISUALIZATION_GUI.setRunButtonState(pause);
 		running = true;
 		searchForPath();
 		
@@ -86,9 +90,9 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 				
 			}
 			
-			if (VisualizationBase.SLEEP_TIMER > 0) {
+			if (SLEEP_TIMER > 0) {
 			
-				wait(VisualizationBase.SLEEP_TIMER); // Sleep timer
+				wait(SLEEP_TIMER); // Sleep timer
 				
 			}
 			
@@ -105,13 +109,13 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 			if (pause) {
 			
 				pause = false;
-				VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+				VISUALIZATION_GUI.setRunButtonState(pause);
 				this.notify();
 				
 			} else {
 				
 				pause = true;
-				VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+				VISUALIZATION_GUI.setRunButtonState(pause);
 				
 			}
 			
@@ -131,11 +135,12 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 	}
 	
-	protected final void addNodeToOpen(NodeBox node, double f) {
+	protected final void addNodeToOpen(INode node, double f) {
 		
 		node.setF(f);
 		open.add(node);
-		node.box.setFlag(Box.flags.QUEUED);
+		Box box = (Box) node.getObject();
+		box.setFlag(Box.flags.QUEUED);
 		
 	}
 	
@@ -157,33 +162,37 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 	}
 	
-	protected final void addNodeToClosed(NodeBox node) {
-		
+	protected final void addNodeToClosed(INode node) {
+
+        Box box = (Box) node.getObject();
+
 		closed.add(node);
 		
-		double f = node.box.euclideanDistance(endNode.box)*0.85;
-		double fStandard = startNode.box.euclideanDistance(endNode.box);
-		int red = (int) (Math.round(Math.max(0, Math.min(200, 200*(f/fStandard))))*(1 - node.box.getWeight()));
-		int green = (int) ((200 - red)*(1 - node.box.getWeight()));
+		double f = node.distanceFrom(endNode)*0.85;
+		double fStandard = startNode.distanceFrom(endNode);
+		int red = (int) (Math.round(Math.max(0, Math.min(200, 200*(f/fStandard))))*(1 - box.getWeight()));
+		int green = (int) ((200 - red)*(1 - box.getWeight()));
 		
-		node.box.setColor(new Color(red, green, 0));
+		box.setColor(new Color(red, green, 0));
 		
-		node.box.setFlag(Box.flags.SEARCHED);
+		box.setFlag(Box.flags.SEARCHED);
 		
 	}
 	
-	protected final void returnPath(NodeBox endNode) {
+	protected final void returnPath(INode endNode) {
 		
-		NodeBox currentNode = endOfPath;
+		INode currentNode = endOfPath;
+        Box currentBox = (Box) currentNode.getObject();
 		
 		do {
-			
-			currentNode.box.setFlag(Box.flags.SHORTEST_PATH);
-			currentNode = currentNode.parentNode;
+
+            currentBox.setFlag(Box.flags.SHORTEST_PATH);
+			currentNode = currentNode.getParent();
+            currentBox = (Box) currentNode.getObject();
 			
 		}
 		
-		while (!currentNode.box.equals(startNode.box));
+		while (!currentBox.equals(startNode));
 		
 	}
 	
@@ -199,7 +208,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 	}
 	
-	public final Node path() {
+	public final INode path() {
 		
 		if (pathFound) {
 			
@@ -213,20 +222,20 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	
 	public final HashSet<Box> boxesAlongPath() {
 		
-		HashSet<Box> boxesList = new HashSet<Box>();
+		HashSet<Box> boxesList = new HashSet<>();
 		
 		if (isPathFound()) {
 		
-			NodeBox currentNode = endOfPath;
+			INode currentNode = endOfPath;
 			
 			do {
 				
-				boxesList.add(currentNode.box);
-				currentNode = currentNode.parentNode;
+				boxesList.add((Box) currentNode.getObject());
+				currentNode = currentNode.getParent();
 				
 			}
 			
-			while (!currentNode.box.equals(startNode.box));
+			while (!currentNode.equals(startNode));
 		
 		}
 
@@ -260,7 +269,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 	
 	public synchronized final HashSet<Box> boxesAlongPathBinding() {
 		
-		HashSet<Box> boxesList = new HashSet<Box>();
+		HashSet<Box> boxesList = new HashSet<>();
 		
 		if (!isPathFound()) {
 		
@@ -272,16 +281,16 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 			
 		}
 			
-		NodeBox currentNode = endOfPath;
+		INode currentNode = endOfPath;
 			
 		do {
 				
-			boxesList.add(currentNode.box);
-			currentNode = currentNode.parentNode;
+			boxesList.add((Box) currentNode.getObject());
+			currentNode = currentNode.getParent();
 				
 		}
 			
-		while (!currentNode.box.equals(startNode.box));
+		while (!currentNode.equals(startNode));
 		
 		return boxesList;
 		

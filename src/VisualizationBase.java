@@ -1,7 +1,7 @@
 import BoxSystem.Box;
 import GUI.VisualizationGUI;
-import GUI.VisualizationWindow;
-import PathfindingAlgorithms.Pathfind;
+import NodeSystem.INode;
+import NodeSystem.NodeBox;
 import RegionSystem.Region;
 
 import javax.swing.JFrame;
@@ -10,9 +10,6 @@ import static Settings.WindowSettings.VISUALIZATION_GUI;
 
 public class VisualizationBase {
 
-
-
-	
 	public static void main(String[] args) {
 
 		Box.initializeStaticVariables();

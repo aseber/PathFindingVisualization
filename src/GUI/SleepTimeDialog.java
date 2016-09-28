@@ -21,6 +21,8 @@ import javax.swing.event.ChangeListener;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
+import static Settings.WindowSettings.SLEEP_TIMER;
+
 
 public class SleepTimeDialog extends JDialog {
 
@@ -82,7 +84,7 @@ public class SleepTimeDialog extends JDialog {
 						
 			}
 					
-			int value = (int) Math.max(0,  Math.min(1000, Math.log(VisualizationBase.SLEEP_TIMER)/Math.log(1.1)));
+			int value = (int) Math.max(0,  Math.min(1000, Math.log(SLEEP_TIMER)/Math.log(1.1)));
 			SleepValueSlider.setValue(value);
 			
 			for (ChangeListener listener : listeners) {
@@ -103,9 +105,9 @@ public class SleepTimeDialog extends JDialog {
 		SleepValue = new JTextField();
 		int value = 0;
 		
-		if (VisualizationBase.SLEEP_TIMER != 0) {
+		if (SLEEP_TIMER != 0) {
 			
-			value = (int) (Math.log(VisualizationBase.SLEEP_TIMER)/Math.log(1.1));
+			value = (int) (Math.log(SLEEP_TIMER)/Math.log(1.1));
 			
 		} else {
 			
@@ -129,7 +131,7 @@ public class SleepTimeDialog extends JDialog {
 		contentPanel.add(SleepLabel, CC.xywh(2, 2, 1, 1));
 		
 		
-		SleepValue.setText(Integer.toString(VisualizationBase.SLEEP_TIMER));
+		SleepValue.setText(Integer.toString(SLEEP_TIMER));
 		SleepValue.addActionListener(actionListener);
 		contentPanel.add(SleepValue, CC.xywh(8, 2, 1, 1));	
 		
@@ -177,7 +179,7 @@ public class SleepTimeDialog extends JDialog {
 	
 	private void AcceptButtonMouseCLicked() {
 		
-		VisualizationBase.SLEEP_TIMER = Integer.parseInt(SleepValue.getText());
+		SLEEP_TIMER = Integer.parseInt(SleepValue.getText());
 		
 		this.dispose();
 		

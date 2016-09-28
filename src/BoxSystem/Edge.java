@@ -6,6 +6,8 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
+import static Settings.WindowSettings.BOX_XY_SIZE;
+
 public class Edge {
 
 	// Powerful class that allows me to build the region system. NodeSystem.Node the the hashcode is created using Guava
@@ -59,13 +61,13 @@ public class Edge {
 		
 		if (direction == directions.DOWN) {
 			
-			endPosition.setLocation(endPosition.getX(), endPosition.getY() + length* VisualizationBase.BOX_XY_SIZE);
+			endPosition.setLocation(endPosition.getX(), endPosition.getY() + length* BOX_XY_SIZE);
 			
 		}
 		
 		if (direction == directions.RIGHT) {
 			
-			endPosition.setLocation(endPosition.getX() + length* VisualizationBase.BOX_XY_SIZE, endPosition.getY());
+			endPosition.setLocation(endPosition.getX() + length* BOX_XY_SIZE, endPosition.getY());
 			
 		}
 		

@@ -281,13 +281,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void setWindowSize(Dimension d) {
 		
-		int sizeX = (int) (ROW_COLUMN_COUNT* VisualizationBase.BOX_XY_SIZE) + 1;
-		int sizeY = (int) (ROW_COLUMN_COUNT* VisualizationBase.BOX_XY_SIZE) + 1;
+		int sizeX = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
+		int sizeY = (int) (ROW_COLUMN_COUNT* BOX_XY_SIZE) + 1;
 		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		regionChangeImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		Dimension newDimension = new Dimension((int) (d.getWidth() + 17), (int) (d.getHeight() + 124));
 		this.setSize(d);
-		VisualizationBase.VISUALIZATION_GUI.setSize(newDimension);
+		VISUALIZATION_GUI.setSize(newDimension);
 		Graphics g = image.getGraphics();
 		g.setColor(Color.CYAN);
 		g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -363,7 +363,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			else {
 				
-				Box.setWeights(boxes, VisualizationBase.WEIGHT);
+				Box.setWeights(boxes, WEIGHT);
 				
 			}
 			
@@ -405,7 +405,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
 				clearBoxFieldFlags(flags);
 				
-				Pathfind path = new PathfindAStar(new NodeBox(Box.getBoxFromIndex(VisualizationBase.ROW_COLUMN_COUNT/2, VisualizationBase.ROW_COLUMN_COUNT/2), null), new NodeBox(Box.getBoxFromPosition(mouseX, mouseY), null));
+				Pathfind path = new PathfindAStar(new NodeBox(Box.getBoxFromIndex(ROW_COLUMN_COUNT/2, ROW_COLUMN_COUNT/2), null), new NodeBox(Box.getBoxFromPosition(mouseX, mouseY), null));
 				path.run();
 				
 			}
@@ -440,7 +440,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (mouse1Down) {
 			
-			Box.setWeights(boxesList, VisualizationBase.WEIGHT);
+			Box.setWeights(boxesList, WEIGHT);
 			
 			box.setSelected();
 		
@@ -555,13 +555,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 + 50), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (WEIGHT*1000 + 50), 0));
 			
 		}
 		
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 - 50), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (WEIGHT*1000 - 50), 0));
 			
 		}
 		
@@ -591,7 +591,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		else {
 		
-			setWeight(MyUtils.clampInt(1000, (int) (VisualizationBase.WEIGHT*1000 - e.getWheelRotation()*15), 0));
+			setWeight(MyUtils.clampInt(1000, (int) (WEIGHT*1000 - e.getWheelRotation()*15), 0));
 			
 		}
 		

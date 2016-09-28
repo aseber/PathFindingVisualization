@@ -1,5 +1,6 @@
 package PathfindingAlgorithms;
 
+import NodeSystem.INode;
 import NodeSystem.Node;
 import NodeSystem.NodeRegion;
 import RegionSystem.Region;
@@ -9,33 +10,36 @@ import java.util.Comparator; // A-Star pathfinding implementation for regions
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import static Settings.WindowSettings.SLEEP_TIMER;
+import static Settings.WindowSettings.VISUALIZATION_GUI;
+
 public class PathfindRegion extends Thread {
 
-	protected NodeRegion startNode;
-	protected NodeRegion endNode;
+	protected INode startNode;
+	protected INode endNode;
 	protected double expandedCounter;
 	protected final double EXPANDED_COUNTER_HARD_CAP = 100000;
 	protected boolean running = true;
 	protected boolean pause = false;
 	protected boolean pathFound = false;
 	protected BestPathComparator comparator = new BestPathComparator();
-	protected PriorityQueue<NodeRegion> open = new PriorityQueue<NodeRegion>(10, comparator);
-	protected PriorityQueue<NodeRegion> closed = new PriorityQueue<NodeRegion>(10, comparator);
-	protected NodeRegion endOfPath = null;
+	protected PriorityQueue<INode> open = new PriorityQueue<>(10, comparator);
+	protected PriorityQueue<INode> closed = new PriorityQueue<>(10, comparator);
+	protected INode endOfPath = null;
 	
-	public PathfindRegion(NodeRegion startNode, NodeRegion endNode) {
+	public PathfindRegion(INode startNode, INode endNode) {
 	
 		this.startNode = startNode;
 		this.endNode = endNode;
-		addNodeToOpen(startNode, startNode.getG() + MyUtils.euclideanDistance(startNode.region.getCenter(), endNode.region.getCenter()));
+		addNodeToOpen(startNode, startNode.getG() + startNode.distanceFrom(endNode));
 		startNode.setG(0);
 		
 	}
 	
-	static class BestPathComparator implements Comparator<Node> {
-		
-		public int compare(Node node, Node node2) {
-			
+	static class BestPathComparator implements Comparator<INode> {
+
+		public int compare(INode node, INode node2) {
+
 			return Double.compare(node.getF(), node2.getF());
 			
 		}
@@ -45,7 +49,7 @@ public class PathfindRegion extends Thread {
 	@Override
 	public final void run() {
 		
-		VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+		VISUALIZATION_GUI.setRunButtonState(pause);
 		searchForPath();
 		
 	}
@@ -53,8 +57,8 @@ public class PathfindRegion extends Thread {
 	
 	
 	public void searchForPath() {
-		
-		NodeRegion currentNode;
+
+		INode currentNode;
 		
 		do {
 			
@@ -68,9 +72,9 @@ public class PathfindRegion extends Thread {
 						
 					}
 					
-					if (VisualizationBase.SLEEP_TIMER > 0) {
+					if (SLEEP_TIMER > 0) {
 					
-						sleep(VisualizationBase.SLEEP_TIMER);
+						sleep(SLEEP_TIMER);
 						
 					}
 					
@@ -89,14 +93,14 @@ public class PathfindRegion extends Thread {
 			addNodeToClosed(currentNode);
 			//VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
 			//VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-			HashSet<NodeRegion> neighboringNodes = currentNode.findNeighboringNodes();
+			HashSet<INode> neighboringNodes = currentNode.findNeighboringNodes();
 			expandedCounter++;
 			
-			for (NodeRegion neighbor : neighboringNodes) {
+			for (INode neighbor : neighboringNodes) {
 				
 				if (!closed.contains(neighbor)) {
 					
-					double tentitive_g = currentNode.getG() + MyUtils.euclideanDistance(currentNode.region.getCenter(), neighbor.region.getCenter());
+					double tentitive_g = currentNode.getG() + currentNode.distanceFrom(neighbor);
 					
 					if (!open.contains(neighbor) | tentitive_g < neighbor.getG()) {
 						
@@ -105,7 +109,7 @@ public class PathfindRegion extends Thread {
 						
 						if (!open.contains(neighbor)) {
 							
-							addNodeToOpen(neighbor, neighbor.getG() + MyUtils.euclideanDistance(neighbor.region.getCenter(), endNode.region.getCenter()));
+							addNodeToOpen(neighbor, neighbor.getG() + neighbor.distanceFrom(endNode));
 							//VisualizationBase.VISUALIZATION_WINDOW.registerChange(neighbor.region, 5000, new Color(255, 0, 0, 125));
 							
 						}
@@ -120,7 +124,7 @@ public class PathfindRegion extends Thread {
 		
 		while (!open.isEmpty() && !isExpandedCounterExceeded() && running);
 		
-		if (currentNode.region.equals(endNode.region)) {
+		if (currentNode.equals(endNode)) {
 			
 			pathFound = true;
 			endOfPath = currentNode;
@@ -137,7 +141,7 @@ public class PathfindRegion extends Thread {
 			
 		}
 		
-		VisualizationBase.VISUALIZATION_GUI.setRunButtonState(true);
+		VISUALIZATION_GUI.setRunButtonState(true);
 		running = false;
 		
 	}
@@ -149,13 +153,13 @@ public class PathfindRegion extends Thread {
 			if (pause) {
 			
 				pause = false;
-				VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+				VISUALIZATION_GUI.setRunButtonState(pause);
 				this.notify();
 				
 			} else {
 				
 				pause = true;
-				VisualizationBase.VISUALIZATION_GUI.setRunButtonState(pause);
+				VISUALIZATION_GUI.setRunButtonState(pause);
 				
 			}
 			
@@ -175,30 +179,30 @@ public class PathfindRegion extends Thread {
 		
 	}
 	
-	protected final void addNodeToOpen(NodeRegion node, double f) {
+	protected final void addNodeToOpen(INode node, double f) {
 		
 		node.setF(f);
 		open.add(node);
 		
 	}
 	
-	protected final void addNodeToClosed(NodeRegion node) {
+	protected final void addNodeToClosed(INode node) {
 		
 		closed.add(node);
 	
 	}
 	
-	protected final void returnPath(Node endNode) {
-		
-		NodeRegion currentNode = endOfPath;
+	protected final void returnPath(INode endNode) {
+
+		INode currentNode = endOfPath;
 		
 		do {
 			
-			currentNode = currentNode.parentNode;
+			currentNode = currentNode.getParent();
 			
 		}
 		
-		while (!currentNode.region.equals(startNode.region));
+		while (!currentNode.equals(startNode));
 		
 	}
 	
@@ -214,7 +218,7 @@ public class PathfindRegion extends Thread {
 		
 	}
 	
-	public final Node path() {
+	public final INode path() {
 		
 		if (pathFound) {
 			
@@ -228,7 +232,7 @@ public class PathfindRegion extends Thread {
 	
 	public synchronized final HashSet<Region> regionsAlongPath() {
 		
-		HashSet<Region> regionsList = new HashSet<Region>();
+		HashSet<Region> regionsList = new HashSet<>();
 		
 		if (!isPathFound()) {
 		
@@ -240,8 +244,8 @@ public class PathfindRegion extends Thread {
 			
 		}
 
-		regionsList.add(startNode.region);
-		NodeRegion currentNode = endOfPath;
+		regionsList.add((Region) startNode.getObject());
+		INode currentNode = endOfPath;
 		
 		if (currentNode == null) {
 			
@@ -251,12 +255,12 @@ public class PathfindRegion extends Thread {
 		
 		do {
 			
-			regionsList.add(currentNode.region);
-			currentNode = currentNode.parentNode;
+			regionsList.add((Region) currentNode.getObject());
+			currentNode = currentNode.getParent();
 				
 		}
 			
-		while (!currentNode.region.equals(startNode.region));
+		while (!currentNode.equals(startNode));
 		
 		return regionsList;
 		

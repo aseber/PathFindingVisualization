@@ -16,8 +16,11 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import BoxSystem.Box;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
+
+import static Settings.WindowSettings.VISUALIZATION_WINDOW;
 
 
 public class DialogClearBoxes extends JDialog implements KeyListener {
@@ -163,7 +166,7 @@ public class DialogClearBoxes extends JDialog implements KeyListener {
 			
 		}
 		
-		VisualizationBase.VISUALIZATION_WINDOW.clearBoxFieldFlags((Box.flags[]) flags.toArray());
+		VISUALIZATION_WINDOW.clearBoxFieldFlags((Box.flags[]) flags.toArray());
 		Box.checkBeginningAndEndState();
 		
 		this.dispose();

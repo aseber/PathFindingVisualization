@@ -1,6 +1,8 @@
 package BoxSystem;
 
+import NodeSystem.IDistance;
 import RegionSystem.Region;
+import Utilities.MyUtils;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -11,7 +13,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Box {
+import static Settings.WindowSettings.*;
+
+public class Box implements IDistance {
 
 	// The box is the smallest unit on the graph. Each box has four neighbors, corresponding to the four cardinal directions
 	// A box can have a weight between 0.0 and 1.0, where 0.0 is considered "open" and 1.0 a "full barrier", values inbetween
@@ -63,11 +67,11 @@ public class Box {
 	}
 	
 	static protected Box selectedBox;
-	static protected Box startBox;
-	static protected Box endBox;
+	static public Box startBox;
+	static public Box endBox;
 	
-	protected Point physicalPosition = new Point();
-	protected Point windowPosition = new Point();
+	public Point physicalPosition = new Point();
+	public Point windowPosition = new Point();
 	private double weight = 0.0;
 	private Color color = flags.STANDARD.getColor();
 	private boolean selected = false;
@@ -90,7 +94,7 @@ public class Box {
 	
 	public static void initializeStaticVariables() {
 		
-		boxMap = new Box[VisualizationBase.ROW_COLUMN_COUNT][VisualizationBase.ROW_COLUMN_COUNT];
+		boxMap = new Box[ROW_COLUMN_COUNT][ROW_COLUMN_COUNT];
 		
 	}
 	
@@ -126,8 +130,7 @@ public class Box {
 			
 		}
 		
-		VisualizationBase.VISUALIZATION_WINDOW.repaint(this);
-		
+		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
 	
@@ -157,12 +160,12 @@ public class Box {
 	
 	public static void createBoxField() {		
 		
-		for (int row = 0; row < VisualizationBase.ROW_COLUMN_COUNT; row++) {
+		for (int row = 0; row < ROW_COLUMN_COUNT; row++) {
 			
-			for (int column = 0; column < VisualizationBase.ROW_COLUMN_COUNT; column++) {
+			for (int column = 0; column < ROW_COLUMN_COUNT; column++) {
 			
-				int x = (int) (row*(VisualizationBase.BOX_XY_SIZE));
-				int y = (int) (column*(VisualizationBase.BOX_XY_SIZE));
+				int x = (int) (row*(BOX_XY_SIZE));
+				int y = (int) (column*(BOX_XY_SIZE));
 				new Box(x, y, row, column, flags.STANDARD);
 			
 			}
@@ -262,21 +265,21 @@ public class Box {
 		
 		else if (cornerFlag == corners.TOP_RIGHT) {
 			
-			point.setLocation(physicalPosition.getX() + VisualizationBase.BOX_XY_SIZE, physicalPosition.getY() + 0);
+			point.setLocation(physicalPosition.getX() + BOX_XY_SIZE, physicalPosition.getY() + 0);
 			return point;
 			
 		}
 		
 		else if (cornerFlag == corners.BOTTOM_LEFT) {
 			
-			point.setLocation(physicalPosition.getX() + 0, physicalPosition.getY() + VisualizationBase.BOX_XY_SIZE);
+			point.setLocation(physicalPosition.getX() + 0, physicalPosition.getY() + BOX_XY_SIZE);
 			return point;
 			
 		}
 		
 		else if (cornerFlag == corners.BOTTOM_RIGHT) {
 			
-			point.setLocation(physicalPosition.getX() + VisualizationBase.BOX_XY_SIZE, physicalPosition.getY() + VisualizationBase.BOX_XY_SIZE);
+			point.setLocation(physicalPosition.getX() + BOX_XY_SIZE, physicalPosition.getY() + BOX_XY_SIZE);
 			return point;
 			
 		}
@@ -287,7 +290,7 @@ public class Box {
 	
 	public Point getCenterPoint() {
 		
-		return new Point((int) (physicalPosition.x + Math.floor((double) VisualizationBase.BOX_XY_SIZE/2.0)), (int) (physicalPosition.y + (Math.floor((double) VisualizationBase.BOX_XY_SIZE/2.0))));
+		return new Point((int) (physicalPosition.x + Math.floor((double) BOX_XY_SIZE/2.0)), (int) (physicalPosition.y + (Math.floor((double) BOX_XY_SIZE/2.0))));
 		
 	}
 	
@@ -329,8 +332,8 @@ public class Box {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) VisualizationBase.BOX_XY_SIZE;
-		int sizeY = (int) VisualizationBase.BOX_XY_SIZE;
+		int sizeX = (int) BOX_XY_SIZE;
+		int sizeY = (int) BOX_XY_SIZE;
 		Color color = this.getActiveColor();
 		
 		g.setColor(color);
@@ -369,8 +372,8 @@ public class Box {
 		
 		int x = (int) this.physicalPosition.getX();
 		int y = (int) this.physicalPosition.getY();
-		int sizeX = (int) VisualizationBase.BOX_XY_SIZE;
-		int sizeY = (int) VisualizationBase.BOX_XY_SIZE;
+		int sizeX = (int) BOX_XY_SIZE;
+		int sizeY = (int) BOX_XY_SIZE;
 		
 		Graphics2D g2 = (Graphics2D) g;
 		g.setColor(color);
@@ -451,8 +454,8 @@ public class Box {
 		
 		HashSet<Box> boxSet = new HashSet<Box>();
 		
-		Point newP1 = new Point(MyUtils.clampInt(VisualizationBase.ROW_COLUMN_COUNT - 1, p1.x, 0), MyUtils.clampInt(VisualizationBase.ROW_COLUMN_COUNT - 1, p1.y, 0));
-		Point newP2 = new Point(MyUtils.clampInt(VisualizationBase.ROW_COLUMN_COUNT - 1, p2.x, 0), MyUtils.clampInt(VisualizationBase.ROW_COLUMN_COUNT - 1, p2.y, 0));
+		Point newP1 = new Point(MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p1.x, 0), MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p1.y, 0));
+		Point newP2 = new Point(MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p2.x, 0), MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p2.y, 0));
 		
 		 if (newP1.getX() > newP2.getX()) { // Implies we have a box with the wrong corners, we need to calculate the standard corners now.
 			
@@ -488,7 +491,7 @@ public class Box {
 		
 		HashSet<Box> boxSet = new HashSet<Box>();
 		Point center = initialBox.getCenterPoint();
-		double size = VisualizationBase.BOX_XY_SIZE;
+		double size = BOX_XY_SIZE;
 		double radiusSq = Math.pow(radius, 2.0);
 		
 		HashSet<Box> roughIntersectingBoxes = initialBox.findNeighboringBoxes((int) Math.ceil(radius/(size - 1)));
@@ -578,14 +581,14 @@ public class Box {
 			
 		}
 		
-		VisualizationBase.VISUALIZATION_WINDOW.repaint(this);
+		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
 	
 	private void setUnselected() {
 		
 		this.selected = false;
-		VisualizationBase.VISUALIZATION_WINDOW.repaint(this);
+		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
 	
@@ -627,8 +630,8 @@ public class Box {
 	
 	public static int findClosestIndex(int pos) {
 		
-		int count = VisualizationBase.ROW_COLUMN_COUNT;
-		double interval = VisualizationBase.BOX_XY_SIZE;
+		int count = ROW_COLUMN_COUNT;
+		double interval = BOX_XY_SIZE;
 		
 		return MyUtils.clampInt(count - 1, (int) Math.floor(pos/interval), 0);
 		
@@ -696,7 +699,7 @@ public class Box {
 			
 		}
 		
-		VisualizationBase.VISUALIZATION_WINDOW.repaint(this);
+		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
 	
@@ -714,7 +717,7 @@ public class Box {
 	
 	public static void checkBeginningAndEndState() {
 		
-		VisualizationBase.VISUALIZATION_GUI.setRunButtonEnabledState(beginningAndEndExist());
+		VISUALIZATION_GUI.setRunButtonEnabledState(beginningAndEndExist());
 		
 	}
 	
@@ -735,7 +738,7 @@ public class Box {
 				int edge_X = (int) windowPosition.getX() + offsetArray[i][0];
 				int edge_Y = (int) windowPosition.getY() + offsetArray[i][1];
 				
-				if (edge_X >= 0 && edge_X < VisualizationBase.ROW_COLUMN_COUNT && edge_Y >= 0 && edge_Y < VisualizationBase.ROW_COLUMN_COUNT) {
+				if (edge_X >= 0 && edge_X < ROW_COLUMN_COUNT && edge_Y >= 0 && edge_Y < ROW_COLUMN_COUNT) {
 					
 					Box currentNeighbor = boxMap[edge_X][edge_Y];
 					neighbors.add(currentNeighbor);
@@ -826,10 +829,17 @@ public class Box {
 		
 	}
 	
-	public double euclideanDistance(Box box) {
-		
-		return MyUtils.euclideanDistance(this.windowPosition, box.windowPosition);
-		
+	public double distanceFrom(IDistance distance) {
+
+		if (distance instanceof Box) {
+
+		    Box box = (Box) distance;
+            return MyUtils.euclideanDistance(this.windowPosition, box.windowPosition);
+
+        }
+
+        throw new IllegalArgumentException("Cannot compare distance of unlike objects");
+
 	}
 	
 	public double euclideanDistanceSquared(Box box) {

@@ -9,6 +9,8 @@ import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 
+import static Settings.WindowSettings.VISUALIZATION_WINDOW;
+
 public class RegionEvent implements Runnable { // class that executes the region flashing thing
 	
 	private static Color transparant = new Color(255, 255, 255, 0);
@@ -46,7 +48,7 @@ public class RegionEvent implements Runnable { // class that executes the region
 	private void drawEnd() {
 		
 		region.fillRegionXYDebugColor(g, transparant, compositeRemove);
-		VisualizationBase.VISUALIZATION_WINDOW.repaint();
+		VISUALIZATION_WINDOW.repaint();
 		
 	}
 	

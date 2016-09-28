@@ -1,21 +1,26 @@
 package PathfindingAlgorithms;
 
 import BoxSystem.Box;
+import NodeSystem.INode;
 import NodeSystem.NodeBox;
 
 import java.util.HashSet;
 
+import static Settings.AlgorithmSettings.CUSTOM_G_MODIFIER;
+import static Settings.AlgorithmSettings.CUSTOM_H_MODIFIER;
+import static Settings.WindowSettings.VISUALIZATION_GUI;
+
 public class PathfindCustom extends Pathfind { // Shitty pathfinding class I used for testing, you can play with the G and H values for interesting results
 	
-	public PathfindCustom(NodeBox startNode, NodeBox endNode) {
+	public PathfindCustom(INode startNode, INode endNode) {
 	
 		super(startNode, endNode, 0);
 		
 	}
 	
 	public void searchForPath() {
-		
-		NodeBox currentNode;
+
+		INode currentNode;
 		
 		synchronized(this) {
 		
@@ -24,26 +29,28 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 				checkWait();
 			
 				currentNode = open.poll();
-				
-				if (currentNode.box.equals(endNode.box)) {
+
+                if (currentNode.equals(endNode)) {
 					
 					break;
 					
 				}
 				
 				addNodeToClosed(currentNode);
-				VisualizationBase.VISUALIZATION_GUI.setOpenCounter(open.size());
-				VisualizationBase.VISUALIZATION_GUI.setClosedCounter(closed.size());
-				HashSet<NodeBox> neighboringNodes = currentNode.findNeighboringNodes();
+				VISUALIZATION_GUI.setOpenCounter(open.size());
+				VISUALIZATION_GUI.setClosedCounter(closed.size());
+				HashSet<INode> neighboringNodes = currentNode.findNeighboringNodes();
 				expandedCounter++;
 				
-				for (NodeBox neighbor : neighboringNodes) {
-					
-					if (neighbor.box.getFlag() != Box.flags.QUEUED && neighbor.box.getFlag() != Box.flags.SEARCHED && !neighbor.box.isFullBarrier() && isBoxInAllowedBoxes(neighbor.box)) {
+				for (INode neighbor : neighboringNodes) {
+
+					Box neighborBox = (Box) neighbor.getObject();
+
+					if (neighborBox.getFlag() != Box.flags.QUEUED && neighborBox.getFlag() != Box.flags.SEARCHED && !neighborBox.isFullBarrier() && isBoxInAllowedBoxes(neighborBox)) {
 						
-						double g = neighbor.box.euclideanDistance(startNode.box);
-						double h = neighbor.box.euclideanDistance(endNode.box);
-						addNodeToOpen(neighbor, g* VisualizationBase.CUSTOM_G_MODIFIER + h* VisualizationBase.CUSTOM_H_MODIFIER);
+						double g = neighbor.distanceFrom(startNode);
+						double h = neighbor.distanceFrom(endNode);
+						addNodeToOpen(neighbor, g* CUSTOM_G_MODIFIER + h* CUSTOM_H_MODIFIER);
 						
 					}
 					
@@ -53,14 +60,14 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 			
 			while (!open.isEmpty() && !isExpandedCounterExceeded() && running);//Window.box_X_Count*Window.box_Y_Count);
 		
-			if (currentNode.box.equals(endNode.box)) {
+			if (currentNode.equals(endNode)) {
 				
 				pathFound = true;
 				endOfPath = currentNode;
 				System.out.println("PathfindingAlgorithms.Path found! Retracing our steps and highlighting the path.");
 				HashSet<Box> boxes = boxesAlongPath();
 				Box.setFlags(boxes, Box.flags.SHORTEST_PATH);
-				VisualizationBase.VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
+				VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
 				
 			} else if (isExpandedCounterExceeded()) {
 				
@@ -72,7 +79,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 				
 			}
 			
-			VisualizationBase.VISUALIZATION_GUI.setRunButtonState(true);
+			VISUALIZATION_GUI.setRunButtonState(true);
 			running = false;
 			
 		}
