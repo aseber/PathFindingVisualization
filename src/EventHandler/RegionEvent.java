@@ -1,13 +1,11 @@
 package EventHandler;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
-
 import RegionSystem.Region;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+
+import java.awt.*;
 
 import static Settings.WindowSettings.VISUALIZATION_WINDOW;
 

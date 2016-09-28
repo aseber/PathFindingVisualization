@@ -5,7 +5,7 @@ import NodeSystem.NodeBox;
 import NodeSystem.NodeRegion;
 import RegionSystem.Region;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashSet;
 
 import static Settings.AlgorithmSettings.CURRENT_ALGORITHM;

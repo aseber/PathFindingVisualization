@@ -2,10 +2,8 @@ package PathfindingAlgorithms;
 
 import BoxSystem.Box;
 import NodeSystem.INode;
-import NodeSystem.Node;
-import NodeSystem.NodeBox;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;

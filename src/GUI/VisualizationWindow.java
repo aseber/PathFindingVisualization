@@ -10,25 +10,14 @@ import PathfindingAlgorithms.PathfindExecutor;
 import RegionSystem.Region;
 import Utilities.MyUtils;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 
-import javax.swing.JPanel;
-
 import static Settings.AlgorithmSettings.WEIGHT;
-import static Settings.WindowSettings.BOX_XY_SIZE;
-import static Settings.WindowSettings.ROW_COLUMN_COUNT;
-import static Settings.WindowSettings.VISUALIZATION_GUI;
+import static Settings.WindowSettings.*;
 
 public class VisualizationWindow extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 	

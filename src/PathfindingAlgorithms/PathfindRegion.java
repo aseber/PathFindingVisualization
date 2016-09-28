@@ -1,12 +1,9 @@
 package PathfindingAlgorithms;
 
 import NodeSystem.INode;
-import NodeSystem.Node;
-import NodeSystem.NodeRegion;
 import RegionSystem.Region;
-import Utilities.MyUtils;
 
-import java.util.Comparator; // A-Star pathfinding implementation for regions
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 

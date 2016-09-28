@@ -2,7 +2,6 @@ package PathfindingAlgorithms;
 
 import BoxSystem.Box;
 import NodeSystem.INode;
-import NodeSystem.NodeBox;
 
 import java.util.HashSet;
 

@@ -1,10 +1,10 @@
 package BoxSystem;
 
-import java.awt.Point;
-
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+
+import java.awt.*;
 
 import static Settings.WindowSettings.BOX_XY_SIZE;
 

@@ -1,8 +1,6 @@
 package NodeSystem;
 
 import BoxSystem.Box;
-import Utilities.MyUtils;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 
 import java.util.HashSet;
 

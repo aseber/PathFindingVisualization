@@ -1,10 +1,8 @@
 import BoxSystem.Box;
 import GUI.VisualizationGUI;
-import NodeSystem.INode;
-import NodeSystem.NodeBox;
 import RegionSystem.Region;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import static Settings.WindowSettings.VISUALIZATION_GUI;
 
