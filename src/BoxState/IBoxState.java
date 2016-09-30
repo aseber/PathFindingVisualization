@@ -1,5 +1,7 @@
 package BoxState;
 
+import BoxSystem.Box;
+
 import java.awt.*;
 
 /**
@@ -7,8 +9,10 @@ import java.awt.*;
  */
 public interface IBoxState {
 
-    Color getColor();
-    void setWeight(double weight);
+    Color getColor(Box context);
+    void setWeight(double weight, Box context);
     String toString();
+    void resetSoftState(Box context);
+    void resetHardState(Box context);
 
 }

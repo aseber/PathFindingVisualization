@@ -1,5 +1,6 @@
 package BoxSystem;
 
+import BoxState.IBoxState;
 import NodeSystem.IDistance;
 import RegionSystem.Region;
 import Utilities.MyUtils;
@@ -26,71 +27,28 @@ public class Box implements IDistance {
 
     }
 	
-	public enum flags {
-		
-		STANDARD(new Color(200, 200, 200), "Standard"),
-		SEARCHED(new Color(200, 0, 0), "Searched"),
-		PARTIAL_BARRIER(null, "Barrier"),
-		FULL_BARRIER(new Color(10, 10, 10), "Barrier"),
-		SHORTEST_PATH(new Color(0, 0, 255), "Shortest PathfindingAlgorithms.Path"),
-		START(new Color(0, 0, 0), "Start"),
-		END(new Color(255, 255, 255), "End"),
-		QUEUED(new Color(155, 155, 155), "Queued"),
-		SELECTED(new Color(100, 100, 255), "Selected");
-		
-		private final Color color;
-		private final String name;
-		
-		flags(Color inputColor, String inputName) {
-			
-			color = inputColor;
-			name = inputName;
-			
-		}
-		
-		public Color getColor() {
-			
-			return color;
-			
-		}
-		
-		public String toString() {
-			
-			return name;
-			
-		}
-		
-	}
-	
 	private static Box selectedBox;
 	static public Box startBox;
 	static public Box endBox;
-	
+
+	public IBoxState boxState;
 	public Point physicalPosition = new Point();
 	private Point windowPosition = new Point();
 	private double weight = 0.0;
-	private Color color = flags.STANDARD.getColor();
 	private boolean selected = false;
-	private flags flag = flags.STANDARD;
-	private HashSet<Edge> edges = new HashSet<Edge>();
+	private HashSet<Edge> edges = new HashSet<>();
 	private Region region = null;
 	
-	private static Box[][] boxMap;
+
 	
-	private Box(int x, int y, int window_X_Index, int window_Y_Index, flags flag) {
+	private Box(int x, int y, int window_X_Index, int window_Y_Index, IBoxState state) {
 		
 		this.physicalPosition.setLocation(x, y);
 		this.windowPosition.setLocation(window_X_Index, window_Y_Index);
 		boxMap[window_X_Index][window_Y_Index] = this;
 		setWeight(0.0);
-		setFlag(flag);
+        setState(state);
 		edgeInitialization();
-		
-	}
-	
-	public static void initializeStaticVariables() {
-		
-		boxMap = new Box[ROW_COLUMN_COUNT][ROW_COLUMN_COUNT];
 		
 	}
 	
@@ -100,32 +58,22 @@ public class Box implements IDistance {
 		edgeInitialization();
 		
 	}
-	
+
+	public void setState(IBoxState state) {
+
+		boxState = state;
+
+	}
+
+	public IBoxState getState() {
+
+		return boxState;
+
+	}
+
 	private void setWeight(double newWeight) {
 		
 		weight = Math.max(0.0, Math.min(1.0, newWeight));
-		int value = (int) (200 - 150*weight);
-		Color color = new Color(value, value, value);
-		setColor(color);
-		
-		if (weight == 0.0) {
-			
-			setFlag(flags.STANDARD);
-			
-		}
-		
-		else if (weight == 1.0) {
-			
-			setFlag(flags.FULL_BARRIER);
-			
-		}
-		
-		else {
-			
-			setFlag(flags.PARTIAL_BARRIER);
-			
-		}
-		
 		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
@@ -154,22 +102,6 @@ public class Box implements IDistance {
 		
 	}
 	
-	public static void createBoxField() {		
-		
-		for (int row = 0; row < ROW_COLUMN_COUNT; row++) {
-			
-			for (int column = 0; column < ROW_COLUMN_COUNT; column++) {
-			
-				int x = row*(BOX_XY_SIZE);
-				int y = column*(BOX_XY_SIZE);
-				new Box(x, y, row, column, flags.STANDARD);
-			
-			}
-		
-		}
-		
-	}
-	
 	private void delete() {
 		
 		edges = null;
@@ -186,18 +118,6 @@ public class Box implements IDistance {
 		}
 		
 		initializeStaticVariables();
-		
-	}
-	
-	public synchronized static Box getBoxFromIndex(Point point) {
-		
-		return getBoxFromIndex(point.x, point.y);
-		
-	}
-	
-	public synchronized static Box getBoxFromIndex(int x, int y) {
-		
-		return boxMap[x][y];
 		
 	}
 	
@@ -309,18 +229,6 @@ public class Box implements IDistance {
 			return this.getFlag().getColor();
 			
 		}
-		
-	}
-	
-	public void setColor(Color color) {
-		
-		this.color = color;
-		
-	}
-	
-	public flags getFlag() {
-		
-		return flag;
 		
 	}
 	

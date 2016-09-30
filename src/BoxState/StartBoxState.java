@@ -7,13 +7,13 @@ import java.awt.*;
 /**
  * Created by asebe on 9/28/2016.
  */
-public class EndBoxState extends BoxState {
+public class StartBoxState extends BoxState {
 
-    private Color endColor = new Color(255, 255, 255);
+    private Color startColor = new Color(0, 0, 0);
 
     public Color getColor(Box context) {
 
-        return endColor;
+        return startColor;
 
     }
 
@@ -21,7 +21,7 @@ public class EndBoxState extends BoxState {
 
     public String toString() {
 
-        return "End";
+        return "Start";
 
     }
 
