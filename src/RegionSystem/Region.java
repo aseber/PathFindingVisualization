@@ -1,6 +1,7 @@
 package RegionSystem;
 
 import BoxSystem.Box;
+import BoxSystem.BoxGrid;
 import BoxSystem.Edge;
 import NodeSystem.IDistance;
 import Utilities.MyUtils;
@@ -11,6 +12,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import static Settings.WindowSettings.*;
+
+/*
 
 public class Region implements IDistance {
 
@@ -24,7 +27,9 @@ public class Region implements IDistance {
 	private HashSet<Edge> edges = new HashSet<>();
 	private Point centerPosition = new Point();
 	private HashSet<Region> neighboringRegions = new HashSet<Region>();
-	
+
+	private BoxGrid boxGrid = new BoxGrid();
+
 	private static ArrayList<Edge> edgeList;
 	private static RegionArrayList[][] regionMap;
 
@@ -418,5 +423,7 @@ public class Region implements IDistance {
 		return "Pos: [" + windowPosition.x + ", " + windowPosition.y + "] | Size = " + boxes.size();
 		
 	}
-	
+
 }
+
+*/

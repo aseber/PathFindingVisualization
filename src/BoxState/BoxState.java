@@ -16,6 +16,7 @@ public abstract class BoxState implements IBoxState {
     public static final IBoxState STANDARD_STATE = new StandardBoxState();
     public static final IBoxState START_BOX_STATE = new StartBoxState();
     public static final IBoxState QUEUED_BOX_STATE = new QueuedBoxState();
+    public static final IBoxState SHORTEST_PATH_BOX_STATE = new AlongShortestPathBoxState();
 
     public final void setWeight(double weight, Box context) {
 

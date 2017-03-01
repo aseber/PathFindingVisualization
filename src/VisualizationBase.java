@@ -1,6 +1,6 @@
 import BoxSystem.Box;
 import GUI.VisualizationGUI;
-import RegionSystem.Region;
+//import RegionSystem.Region;
 
 import javax.swing.*;
 
@@ -10,8 +10,7 @@ public class VisualizationBase {
 
 	public static void main(String[] args) {
 
-		Box.initializeStaticVariables();
-		Region.initializeStaticVariables();
+//		Region.initializeStaticVariables();
 		VISUALIZATION_GUI = new VisualizationGUI();
 		VISUALIZATION_GUI.setTitle("Pathfinding Visualization");
 		VISUALIZATION_GUI.setVisible(true);

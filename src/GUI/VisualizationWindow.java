@@ -1,13 +1,15 @@
 package GUI;
 
+import BoxState.IBoxState;
 import BoxSystem.Box;
-import EventHandler.RegionEvent;
-import EventHandler.RegionEventDriver;
+import BoxSystem.BoxGrid;
+//import EventHandler.RegionEvent;
+//import EventHandler.RegionEventDriver;
 import NodeSystem.NodeBox;
 import PathfindingAlgorithms.Pathfind;
 import PathfindingAlgorithms.PathfindAStar;
 import PathfindingAlgorithms.PathfindExecutor;
-import RegionSystem.Region;
+//import RegionSystem.Region;
 import Utilities.MyUtils;
 
 import javax.swing.*;
@@ -16,6 +18,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 
+import static BoxState.BoxState.*;
 import static Settings.AlgorithmSettings.WEIGHT;
 import static Settings.WindowSettings.*;
 
@@ -29,8 +32,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	boolean drawDebugInformation = false;
 	boolean drawFunInformation = false;
 	int drawSize = 1;
+	private BoxGrid boxGrid;
 	private BufferedImage image, regionChangeImage;
-	RegionEventDriver driver = new RegionEventDriver();
+//	RegionEventDriver driver = new RegionEventDriver();
 	PathfindExecutor executor = new PathfindExecutor();
 	
 	public VisualizationWindow() {
@@ -52,7 +56,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
 		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
-		
+
+		boxGrid = new BoxGrid(new Point(ROW_COLUMN_COUNT, ROW_COLUMN_COUNT));
+
 		Graphics g;
 		
 		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
@@ -88,11 +94,11 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		if (drawDebugInformation) {
 			
-			Box box = Box.getBoxFromPosition(mouse);
+			Box box = boxGrid.getBoxFromPosition(mouse);
 			
-			Region region = box.getRegion();
+//			Region region = box.getRegion();
 			
-			if (region != null) {
+			/*if (region != null) {
 			
 				HashSet<Region> neighboringRegions = region.getNeighboringRegions();
 				
@@ -108,7 +114,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				
 				region.drawRegionBorderDebugColor(g, new BasicStroke(3), new Color(0, 255, 255, 125));	// draw this region in a cyan color
 				
-			}
+			}*/
 			
 			g.setColor(Color.BLACK);
 			g.drawLine((int) oldMouse.getX(), (int) oldMouse.getY(), mouseX, mouseY);	
@@ -119,15 +125,15 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			g.fillRect(0, 0, ROW_COLUMN_COUNT* BOX_XY_SIZE + 1, 15);
 			g.setColor(Color.WHITE);
 			String display1 = "Mouse: [" + mouseX + ", " + mouseY + "]";
-			String display2 = "RegionSystem.Region: [" + Region.findClosestIndex(mouseX) + ", " + Region.findClosestIndex(mouseY) + "]";
-			String display3 = "BoxSystem.Box: [" + Box.findClosestIndex(mouseX) + ", " + Box.findClosestIndex(mouseY) + "]";
+//			String display2 = "RegionSystem.Region: [" + Region.findClosestIndex(mouseX) + ", " + Region.findClosestIndex(mouseY) + "]";
+			String display3 = "BoxSystem.Box: [" + boxGrid.findClosestIndex(mouseX) + ", " + boxGrid.findClosestIndex(mouseY) + "]";
 			String display4 = "BoxSystem.Box flag: " + box.getFlag();
 			String display5 = "BoxSystem.Box weight: " + box.getWeight();
 			int offsetX = 5;
 			g.drawString(display1, offsetX, 12);
 			offsetX += g.getFontMetrics().stringWidth(display1) + 5;
-			g.drawString(display2, offsetX, 12);
-			offsetX += g.getFontMetrics().stringWidth(display2) + 5;
+//			g.drawString(display2, offsetX, 12);
+//			offsetX += g.getFontMetrics().stringWidth(display2) + 5;
 			g.drawString(display3, offsetX, 12);
 			offsetX += g.getFontMetrics().stringWidth(display3) + 5;
 			g.drawString(display4, offsetX, 12);
@@ -174,7 +180,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void repaintAll() {
 		
-		repaint(Box.getAllBoxes());
+		repaint(boxGrid.getAllBoxes());
 		
 	}
 	
@@ -199,7 +205,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 	}*/
 	
-	public void registerChange(Region region, int time, Color color) {
+/*	public void registerChange(Region region, int time, Color color) {
 		
 		driver.runEvent(new RegionEvent(region, regionChangeImage.getGraphics(), color), time); // RegionSystem.Region flashing box system
 		
@@ -208,21 +214,20 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	public void removeBoxRegionField() {
 		
 		Region.removeAllRegions();
-		Box.removeAllBoxes();
+        boxGrid.removeAllBoxes();
 		
 	}
 	
 	public void createBoxRegionField() {
-		
-		Box.createBoxField();
+
 		Region.createRegionField();
 		repaintAll();
 		
-	}
+	}*/
 	
-	public void clearBoxFieldFlag(Box.flags flag) {
+	public void clearBoxFieldFlag(IBoxState flag) {
 		
-		if (flag == Box.flags.STANDARD) {return;}
+		/*if (flag == Box.flags.STANDARD) {return;}
 		if (flag == Box.flags.START) {Box.resetStartBox(); return;}
 		if (flag == Box.flags.END) {Box.resetEndBox();  return;}
 		
@@ -254,13 +259,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 				
 			}
 			
-		}
+		}*/
 		
 	}
 	
-	public void clearBoxFieldFlags(Box.flags[] flags) {
+	public void clearBoxFieldFlags(IBoxState[] flags) {
 		
-		for (Box.flags flag : flags) {
+		for (IBoxState flag : flags) {
 			
 			clearBoxFieldFlag(flag);
 			
@@ -339,14 +344,14 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 			
-		Box box = Box.getBoxFromPosition(mouseX, mouseY);
-		HashSet<Box> boxes = Box.boxesInCircle(box, drawSize);
+		Box box = boxGrid.getBoxFromPosition(mouseX, mouseY);
+		HashSet<Box> boxes = boxGrid.boxesInCircle(box, drawSize);
 		
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			
 			if (shiftDown) {
 				
-				box.setFlag(Box.flags.START);
+				box.setFlag(START_BOX_STATE);
 				
 			}
 			
@@ -362,13 +367,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			if (shiftDown) {
 				
-				box.setFlag(Box.flags.END);
+				box.setFlag(END_BOX_STATE);
 				
 			}
 			
 			else {
 				
-				Box.setFlags(boxes, Box.flags.STANDARD);
+				Box.setFlags(boxes, STANDARD_STATE);
 				
 			}
 			
@@ -382,19 +387,19 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		int mouseY = e.getY();
 		mouse.setLocation(MyUtils.clampInt(WINDOW_WIDTH, mouseX, 0), MyUtils.clampInt(WINDOW_HEIGHT, mouseY, 0));
 		
-		Box box = Box.getBoxFromPosition(mouseX, mouseY);
+		Box box = boxGrid.getBoxFromPosition(mouseX, mouseY);
 		box.setSelected();
 		
-		Box oldBox = Box.getBoxFromPosition(oldMouse);
+		Box oldBox = boxGrid.getBoxFromPosition(oldMouse);
 		
 		if (drawFunInformation) {
 		
 			if (box != oldBox) {
 			
-				Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
+				IBoxState[] flags = {SEARCHED_BOX_STATE, SHORTEST_PATH_BOX_STATE, QUEUED_BOX_STATE};
 				clearBoxFieldFlags(flags);
 				
-				Pathfind path = new PathfindAStar(new NodeBox(Box.getBoxFromIndex(ROW_COLUMN_COUNT/2, ROW_COLUMN_COUNT/2), null), new NodeBox(Box.getBoxFromPosition(mouseX, mouseY), null));
+				Pathfind path = new PathfindAStar(new NodeBox(boxGrid.getBoxFromIndex(ROW_COLUMN_COUNT/2, ROW_COLUMN_COUNT/2), null), new NodeBox(boxGrid.getBoxFromPosition(mouseX, mouseY), null));
 				path.run();
 				
 			}
@@ -410,14 +415,14 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		mouse.setLocation(MyUtils.clampInt(WINDOW_WIDTH, mouseX, 0), MyUtils.clampInt(WINDOW_HEIGHT, mouseY, 0));
 			
 		HashSet<Box> boxesList = new HashSet<Box>();
-		Box box = Box.getBoxFromPosition(mouseX, mouseY);
-		Box oldBox = Box.getBoxFromPosition(oldMouse);
+		Box box = boxGrid.getBoxFromPosition(mouseX, mouseY);
+		Box oldBox = boxGrid.getBoxFromPosition(oldMouse);
 		
 		boxesList.add(box);
 		
 		if (box != oldBox) { // Far enough apart that we care about interpolating between the points.
 			
-			HashSet<Box> boxes = Box.boxesBetweenPoints(new Point(mouseX, mouseY), oldMouse, drawSize);
+			HashSet<Box> boxes = boxGrid.boxesBetweenPoints(new Point(mouseX, mouseY), oldMouse, drawSize);
 			
 			for (Box currentBox : boxes) {
 			
@@ -439,7 +444,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 			for (Box currentBox : boxesList) {
 				
-				currentBox.setFlag(Box.flags.STANDARD);
+				currentBox.setFlag(STANDARD_STATE);
 				
 			}
 
@@ -488,7 +493,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			executor.endPathfinding();
 				
-			Box.flags[] flags = {Box.flags.SEARCHED, Box.flags.SHORTEST_PATH, Box.flags.QUEUED};
+			IBoxState[] flags = {SEARCHED_BOX_STATE, SHORTEST_PATH_BOX_STATE, QUEUED_BOX_STATE};
 			clearBoxFieldFlags(flags);
 			
 		}

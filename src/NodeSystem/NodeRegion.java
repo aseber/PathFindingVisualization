@@ -1,8 +1,10 @@
 package NodeSystem;
 
-import RegionSystem.Region;
+//import RegionSystem.Region;
 
 import java.util.HashSet;
+
+/*
 
 public class NodeRegion extends Node { // A boxNode but adapted for regions
 
@@ -29,3 +31,5 @@ public class NodeRegion extends Node { // A boxNode but adapted for regions
 	}
 	
 }
+
+*/

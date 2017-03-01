@@ -1,5 +1,6 @@
 package GUI;
 
+import BoxState.IBoxState;
 import BoxSystem.Box;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
@@ -12,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+import static BoxState.BoxState.*;
 import static Settings.WindowSettings.VISUALIZATION_WINDOW;
 
 
@@ -114,51 +116,51 @@ public class DialogClearBoxes extends JDialog implements KeyListener {
 	
 	private void AcceptButtonMouseCLicked() {
 		
-		ArrayList<Box.flags> flags = new ArrayList<Box.flags>(10);
+		ArrayList<IBoxState> flags = new ArrayList<>(10);
 		
 		if (searchedBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.SEARCHED);
+			flags.add(SEARCHED_BOX_STATE);
 			
 		}
 		
 		if (fullBarrierBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.FULL_BARRIER);
+			flags.add(BARRIER_STATE);
 			
 		}
 		
 		if (partialBarrierBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.PARTIAL_BARRIER);
+			flags.add(BARRIER_STATE);
 			
 		}
 		
 		if (shortBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.SHORTEST_PATH);
+			flags.add(SHORTEST_PATH_BOX_STATE);
 			
 		}
 
 		if (startBoxCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.START);
+			flags.add(START_BOX_STATE);
 			
 		}
 		
 		if (endBoxCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.END);
+			flags.add(END_BOX_STATE);
 			
 		}
 		
 		if (queuedBoxesCheckBox.isSelected()) {
 			
-			flags.add(Box.flags.QUEUED);
+			flags.add(QUEUED_BOX_STATE);
 			
 		}
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlags((Box.flags[]) flags.toArray());
+		VISUALIZATION_WINDOW.clearBoxFieldFlags((IBoxState[]) flags.toArray());
 		Box.checkBeginningAndEndState();
 		
 		this.dispose();

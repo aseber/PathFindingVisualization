@@ -5,6 +5,9 @@ import NodeSystem.INode;
 
 import java.util.HashSet;
 
+import static BoxState.BoxState.QUEUED_BOX_STATE;
+import static BoxState.BoxState.SEARCHED_BOX_STATE;
+import static BoxState.BoxState.SHORTEST_PATH_BOX_STATE;
 import static Settings.AlgorithmSettings.CUSTOM_G_MODIFIER;
 import static Settings.AlgorithmSettings.CUSTOM_H_MODIFIER;
 import static Settings.WindowSettings.VISUALIZATION_GUI;
@@ -45,7 +48,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 
 					Box neighborBox = (Box) neighbor.getObject();
 
-					if (neighborBox.getFlag() != Box.flags.QUEUED && neighborBox.getFlag() != Box.flags.SEARCHED && !neighborBox.isFullBarrier() && isBoxInAllowedBoxes(neighborBox)) {
+					if (neighborBox.getFlag() != QUEUED_BOX_STATE && neighborBox.getFlag() != SEARCHED_BOX_STATE && !neighborBox.isFullBarrier() && isBoxInAllowedBoxes(neighborBox)) {
 						
 						double g = neighbor.distanceFrom(startNode);
 						double h = neighbor.distanceFrom(endNode);
@@ -65,7 +68,7 @@ public class PathfindCustom extends Pathfind { // Shitty pathfinding class I use
 				endOfPath = currentNode;
 				System.out.println("PathfindingAlgorithms.Path found! Retracing our steps and highlighting the path.");
 				HashSet<Box> boxes = boxesAlongPath();
-				Box.setFlags(boxes, Box.flags.SHORTEST_PATH);
+				Box.setFlags(boxes, SHORTEST_PATH_BOX_STATE);
 				VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
 				
 			} else if (isExpandedCounterExceeded()) {

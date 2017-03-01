@@ -5,6 +5,9 @@ import NodeSystem.INode;
 
 import java.util.HashSet;
 
+import static BoxState.BoxState.QUEUED_BOX_STATE;
+import static BoxState.BoxState.SEARCHED_BOX_STATE;
+import static BoxState.BoxState.SHORTEST_PATH_BOX_STATE;
 import static Settings.AlgorithmSettings.WEIGHT_MODIFIER;
 import static Settings.WindowSettings.VISUALIZATION_GUI;
 
@@ -47,16 +50,16 @@ public class PathfindDijkstra extends Pathfind {
 
 					Box neighborBox = (Box) neighbor.getObject();
 
-					if (neighborBox.getFlag() != Box.flags.SEARCHED && !neighborBox.isFullBarrier() && isBoxInAllowedBoxes(neighborBox)) {
+					if (neighborBox.getFlag() != SEARCHED_BOX_STATE && !neighborBox.isFullBarrier() && isBoxInAllowedBoxes(neighborBox)) {
 						
 						double tentitive_g = currentNode.getG() + neighbor.distanceFrom(currentNode)*(1 + WEIGHT_MODIFIER*neighborBox.getWeight());
 						
-						if (neighborBox.getFlag() != Box.flags.QUEUED | tentitive_g < neighbor.getG()) {
+						if (neighborBox.getFlag() != QUEUED_BOX_STATE | tentitive_g < neighbor.getG()) {
 							
 							neighbor.setParent(currentNode);
 							neighbor.setG(tentitive_g);
 							
-							if (neighborBox.getFlag() != Box.flags.QUEUED) {
+							if (neighborBox.getFlag() != QUEUED_BOX_STATE) {
 								
 								addNodeToOpen(neighbor, neighbor.distanceFrom(startNode));
 								
@@ -78,7 +81,7 @@ public class PathfindDijkstra extends Pathfind {
 				endOfPath = currentNode;
 				System.out.println("PathfindingAlgorithms.Path found! Retracing our steps and highlighting the path.");
 				HashSet<Box> boxes = boxesAlongPath();
-				Box.setFlags(boxes, Box.flags.SHORTEST_PATH);
+				Box.setFlags(boxes, SHORTEST_PATH_BOX_STATE);
 				VISUALIZATION_GUI.setPathLengthCounter(boxes.size());
 				
 				

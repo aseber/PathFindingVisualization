@@ -1,7 +1,7 @@
 package PathfindingAlgorithms;
 
 import NodeSystem.INode;
-import RegionSystem.Region;
+//import RegionSystem.Region;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -9,6 +9,8 @@ import java.util.PriorityQueue;
 
 import static Settings.WindowSettings.SLEEP_TIMER;
 import static Settings.WindowSettings.VISUALIZATION_GUI;
+
+/*
 
 public class PathfindRegion extends Thread {
 
@@ -276,3 +278,5 @@ public class PathfindRegion extends Thread {
 	}
 	
 }
+
+*/

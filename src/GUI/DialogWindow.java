@@ -1,7 +1,7 @@
 package GUI;
 
 import BoxSystem.Box;
-import RegionSystem.Region;
+//import RegionSystem.Region;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -119,16 +119,15 @@ public class DialogWindow extends JDialog {
 
 		VISUALIZATION_WINDOW.executor.endPathfinding();
 
-		VISUALIZATION_WINDOW.removeBoxRegionField();
+//		VISUALIZATION_WINDOW.removeBoxRegionField();
 		ROW_COLUMN_COUNT = Integer.parseInt(boxCountField.getText());
 		int sizeInt = Integer.parseInt(boxSizeField.getText());
 		BOX_XY_SIZE = sizeInt;
 		REGION_SIZE = Integer.parseInt(regionSizeField.getText());
 		Dimension windowSize = new Dimension(ROW_COLUMN_COUNT* BOX_XY_SIZE, ROW_COLUMN_COUNT* BOX_XY_SIZE);
 		VISUALIZATION_WINDOW.setWindowSize(windowSize);
-		Box.initializeStaticVariables();
-		Region.initializeStaticVariables();
-		VISUALIZATION_WINDOW.createBoxRegionField();
+//		Region.initializeStaticVariables();
+//		VISUALIZATION_WINDOW.createBoxRegionField();
 		VISUALIZATION_WINDOW.invalidate();
 		VISUALIZATION_WINDOW.repaint();
 

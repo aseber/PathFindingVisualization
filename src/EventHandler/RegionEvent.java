@@ -1,6 +1,6 @@
 package EventHandler;
 
-import RegionSystem.Region;
+//import RegionSystem.Region;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
@@ -8,6 +8,8 @@ import com.google.common.hash.Hashing;
 import java.awt.*;
 
 import static Settings.WindowSettings.VISUALIZATION_WINDOW;
+
+/*
 
 public class RegionEvent implements Runnable { // class that executes the region flashing thing
 	
@@ -86,3 +88,5 @@ public class RegionEvent implements Runnable { // class that executes the region
 	}
 	
 }
+
+*/

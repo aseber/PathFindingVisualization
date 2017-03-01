@@ -8,6 +8,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 
+import static BoxState.BoxState.QUEUED_BOX_STATE;
+import static BoxState.BoxState.SEARCHED_BOX_STATE;
+import static BoxState.BoxState.SHORTEST_PATH_BOX_STATE;
 import static Settings.WindowSettings.SLEEP_TIMER;
 import static Settings.WindowSettings.VISUALIZATION_GUI;
 
@@ -138,7 +141,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		node.setF(f);
 		open.add(node);
 		Box box = (Box) node.getObject();
-		box.setFlag(Box.flags.QUEUED);
+		box.setFlag(QUEUED_BOX_STATE);
 		
 	}
 	
@@ -171,9 +174,9 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		int red = (int) (Math.round(Math.max(0, Math.min(200, 200*(f/fStandard))))*(1 - box.getWeight()));
 		int green = (int) ((200 - red)*(1 - box.getWeight()));
 		
-		box.setColor(new Color(red, green, 0));
+//		box.setColor(new Color(red, green, 0));
 		
-		box.setFlag(Box.flags.SEARCHED);
+		box.setFlag(SEARCHED_BOX_STATE);
 		
 	}
 	
@@ -184,7 +187,7 @@ public abstract class Pathfind implements Runnable { // Abstract class that all 
 		
 		do {
 
-            currentBox.setFlag(Box.flags.SHORTEST_PATH);
+            currentBox.setFlag(SHORTEST_PATH_BOX_STATE);
 			currentNode = currentNode.getParent();
             currentBox = (Box) currentNode.getObject();
 			

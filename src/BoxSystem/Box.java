@@ -2,7 +2,7 @@ package BoxSystem;
 
 import BoxState.IBoxState;
 import NodeSystem.IDistance;
-import RegionSystem.Region;
+//import RegionSystem.Region;
 import Utilities.MyUtils;
 
 import java.awt.*;
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import static BoxState.BoxState.BARRIER_STATE;
+import static BoxState.BoxState.STANDARD_STATE;
 import static Settings.WindowSettings.*;
 
 public class Box implements IDistance {
@@ -37,15 +39,13 @@ public class Box implements IDistance {
 	private double weight = 0.0;
 	private boolean selected = false;
 	private HashSet<Edge> edges = new HashSet<>();
-	private Region region = null;
+//	private Region region = null;
 	
-
-	
-	private Box(int x, int y, int window_X_Index, int window_Y_Index, IBoxState state) {
+	public Box(int x, int y, int window_X_Index, int window_Y_Index, IBoxState state) {
 		
 		this.physicalPosition.setLocation(x, y);
 		this.windowPosition.setLocation(window_X_Index, window_Y_Index);
-		boxMap[window_X_Index][window_Y_Index] = this;
+//		boxMap[window_X_Index][window_Y_Index] = this;
 		setWeight(0.0);
         setState(state);
 		edgeInitialization();
@@ -74,27 +74,27 @@ public class Box implements IDistance {
 	private void setWeight(double newWeight) {
 		
 		weight = Math.max(0.0, Math.min(1.0, newWeight));
-		VISUALIZATION_WINDOW.repaint(this);
+//		VISUALIZATION_WINDOW.repaint(this);
 		
 	}
 	
-	public void setRegion(Region region) {
+//	public void setRegion(Region region) {
 		
-		region = region;
+//		region = region;
 		
-	}
+//	}
 	
-	public Region getRegion() {
+//	public Region getRegion() {
 		
-		return region;
+//		return region;
 		
-	}
+//	}
 	
-	public void clearRegion() {
+//	public void clearRegion() {
 		
-		region = null;
+//		region = null;
 		
-	}
+//	}
 	
 	public double getWeight() {
 		
@@ -102,22 +102,10 @@ public class Box implements IDistance {
 		
 	}
 	
-	private void delete() {
+	public void delete() {
 		
 		edges = null;
-		clearRegion();
-		
-	}
-	
-	public static void removeAllBoxes() {
-		
-		for (Box currentBox : getAllBoxes()) {
-			
-			currentBox.delete();
-			
-		}
-		
-		initializeStaticVariables();
+//		clearRegion();
 		
 	}
 	
@@ -127,7 +115,7 @@ public class Box implements IDistance {
 		
 			Box oldStartBox = startBox;
 			startBox = null;
-			oldStartBox.setFlag(flags.STANDARD);
+			oldStartBox.setFlag(STANDARD_STATE);
 			
 		}
 		
@@ -139,7 +127,7 @@ public class Box implements IDistance {
 		
 			Box oldEndBox = endBox;
 			endBox = null;
-			oldEndBox.setFlag(flags.STANDARD);
+			oldEndBox.setFlag(STANDARD_STATE);
 			
 		}
 		
@@ -204,7 +192,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	private Point getCenterPoint() {
+	public Point getCenterPoint() {
 		
 		return new Point((int) (physicalPosition.x + Math.floor((double) BOX_XY_SIZE/2.0)), (int) (physicalPosition.y + (Math.floor((double) BOX_XY_SIZE/2.0))));
 		
@@ -212,23 +200,23 @@ public class Box implements IDistance {
 	
 	private Color getActiveColor() {
 		
-		if (selected) {
+//		if (selected) {
 			
-			return flags.SELECTED.getColor();
-			
-		} 
+//			return getFlag().SELECTED.getColor();
+
+//		}
 		
-		else if (this.flag == flags.PARTIAL_BARRIER || this.flag == flags.SEARCHED) {
+		/*else if (this.flag == flags.PARTIAL_BARRIER || this.flag == flags.SEARCHED) {
 		
 			return color;
-			
-		}
+
+		}*/
 		
-		else {
+//		else {
 		
-			return this.getFlag().getColor();
+			return this.getFlag().getColor(this);
 			
-		}
+//		}
 		
 	}
 	
@@ -327,129 +315,7 @@ public class Box implements IDistance {
 		
 	}
 	
-	public static HashSet<Box> boxesInPhysicalSquare(Point p1, Point p2) { // Used to find each regions initial boxes
-		
-		Point newP1 = new Point(findClosestIndex(p1.x), findClosestIndex(p1.y));
-		Point newP2 = new Point(findClosestIndex(p2.x), findClosestIndex(p2.y));
-		
-		return boxesInIndicesSquare(newP1, newP2);
-		
-	}
-	
-	public static HashSet<Box> boxesInPhysicalSquare(int p1x, int p1y, int p2x, int p2y) {
-		
-		Point newP1 = new Point(findClosestIndex(p1x), findClosestIndex(p1y));
-		Point newP2 = new Point(findClosestIndex(p2x), findClosestIndex(p2y));
-		
-		return boxesInIndicesSquare(newP1, newP2);
-		
-	}
-	
-	public static HashSet<Box> boxesInIndicesSquare(int p1x, int p1y, int p2x, int p2y) {
-		
-		Point newP1 = new Point(p1x, p1y);
-		Point newP2 = new Point(p2x, p2y);
-		
-		return boxesInIndicesSquare(newP1, newP2);
-		
-	}
-	
-	public static HashSet<Box> boxesInIndicesSquare(Point p1, Point p2) {
-		
-		HashSet<Box> boxSet = new HashSet<Box>();
-		
-		Point newP1 = new Point(MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p1.x, 0), MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p1.y, 0));
-		Point newP2 = new Point(MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p2.x, 0), MyUtils.clampInt(ROW_COLUMN_COUNT - 1, p2.y, 0));
-		
-		 if (newP1.getX() > newP2.getX()) { // Implies we have a box with the wrong corners, we need to calculate the standard corners now.
-			
-			double oldX = newP1.getX();
-			newP1.setLocation(newP2.getX(), newP1.getY());
-			newP2.setLocation(oldX, newP2.getY());
-			
-		}
-		
-		if (newP1.getY() > newP2.getY()) { // Implies we have a box with the wrong corners, we need to calculate the standard corners now. 
-			
-			double oldY = newP1.getY();
-			newP1.setLocation(newP1.getX(), newP2.getY());
-			newP2.setLocation(newP2.getX(), oldY);
-			
-		}
-		
-		for (int x = (int) newP1.getX(); x <= newP2.getX(); x++) {
-			
-			for (int y = (int) newP1.getY(); y <= newP2.getY(); y++) {
-				
-				boxSet.add(getBoxFromIndex(x, y));
-				
-			}
-			
-		}
-		
-		return boxSet;
-		
-	}
-	
-	public static HashSet<Box> boxesInCircle(Box initialBox, double radius) { // Used to draw larger swaths 
-		
-		HashSet<Box> boxSet = new HashSet<Box>();
-		Point center = initialBox.getCenterPoint();
-		double size = BOX_XY_SIZE;
-		double radiusSq = Math.pow(radius, 2.0);
-		
-		HashSet<Box> roughIntersectingBoxes = initialBox.findNeighboringBoxes((int) Math.ceil(radius/(size - 1)));
-		
-		for (Box currentBox : roughIntersectingBoxes) {
-			
-			Point boxPos = currentBox.getCenterPoint();
-			double distance = boxPos.distanceSq(center);
-			
-			if (distance <= radiusSq) {
-				
-				boxSet.add(currentBox);
-				
-			}
-			
-		}
-		
-		boxSet.add(initialBox);
-		return boxSet;
-		
-	}
-	
-	public static HashSet<Box> boxesBetweenPoints(Point p1, Point p2, double radius) { // Used for interpolating between two points and finding the boxes that lie on that line
-		
-		HashSet<Box> intersectingBoxesList = new HashSet<Box>();
-		int xDiff = (int) (p2.getX() - p1.getX()); // Can extend this to make it skip tp xPos that is in next box.
-		int yDiff = (int) (p2.getY() - p1.getY());
-		int accuracy = 1000;
-		int xPos = 0;
-		Box boxOnPath;
-		
-		while (xPos <= accuracy) {
-			
-			int x = (int) (xPos*xDiff/accuracy + p1.getX());
-			int y = (int) (xPos*yDiff/accuracy + p1.getY());
-			boxOnPath = getBoxFromPosition(x, y);				
-			intersectingBoxesList.add(boxOnPath);
-			xPos++;
-			
-		}
-		
-		HashSet<Box> newIntersectingBoxesList = new HashSet<Box>();
-		
-		for (Box box : intersectingBoxesList) {
-			
-			newIntersectingBoxesList.addAll(boxesInCircle(box, radius));
-			
-		}
-		
-		return newIntersectingBoxesList;
-		
-	}
-	
-	public static void setFlags(HashSet<Box> boxes, flags flag) {
+	public static void setFlags(HashSet<Box> boxes, IBoxState flag) {
 		
 		for (Box box : boxes) {
 			
@@ -496,54 +362,19 @@ public class Box implements IDistance {
 		
 	}
 	
-	public synchronized static HashSet<Box> getAllBoxes() {
-		
-		HashSet<Box> boxesList = new HashSet<Box>(100);
-		
-		for (Box[] bigArray : boxMap) {
-			
-			for (Box currentBox : bigArray) {
-				
-				if (currentBox != null) {
-					
-					boxesList.add(currentBox);
-					
-				}
-				
-			}
-			
-		}
+	public IBoxState getFlag() {
 
-		return boxesList;
-		
+	    return boxState;
+
+    }
+
+	public void setFlag(IBoxState newFlag) {
+
+		this.boxState = newFlag;
+
 	}
-	
-	public static Box getBoxFromPosition(int x, int y) {
-		
-		int boxX = findClosestIndex(x);
-		int boxY = findClosestIndex(y);
-		return getBoxFromIndex(boxX, boxY);
-		
-	}
-	
-	public static Box getBoxFromPosition(Point p1) {
-		
-		return getBoxFromPosition(p1.x, p1.y);
-		
-	}
-	
-	public static int findClosestIndex(int pos) {
-		
-		int count = ROW_COLUMN_COUNT;
-		double interval = BOX_XY_SIZE;
-		
-		return MyUtils.clampInt(count - 1, (int) Math.floor(pos/interval), 0);
-		
-	}
-	
-	public void setFlag(flags newFlag) {
-		
-		if (this.getFlag() == newFlag) {
+
+		/*if (this.getFlag() == newFlag) {
 			
 			return;
 			
@@ -605,7 +436,7 @@ public class Box implements IDistance {
 		
 		VISUALIZATION_WINDOW.repaint(this);
 		
-	}
+	}*/
 	
 	public static boolean beginningAndEndExist() {
 
@@ -638,14 +469,14 @@ public class Box implements IDistance {
 				
 				if (edge_X >= 0 && edge_X < ROW_COLUMN_COUNT && edge_Y >= 0 && edge_Y < ROW_COLUMN_COUNT) {
 					
-					Box currentNeighbor = boxMap[edge_X][edge_Y];
-					neighbors.add(currentNeighbor);
+//					Box currentNeighbor = boxMap[edge_X][edge_Y];
+//					neighbors.add(currentNeighbor);
 					
-					if (order > 1) {
+//					if (order > 1) {
 					
-						expansion.add(currentNeighbor.findNeighboringBoxes(order - 1, this));
+//						expansion.add(currentNeighbor.findNeighboringBoxes(order - 1, this));
 					
-					}
+//					}
 					
 				}
 				
@@ -705,13 +536,13 @@ public class Box implements IDistance {
 	
 	public boolean isFullBarrier() {
 
-        return flag == flags.FULL_BARRIER;
+        return getFlag() == BARRIER_STATE;
 
     }
 	
 	public boolean isPartialBarrier() {
 
-        return flag == flags.PARTIAL_BARRIER;
+        return getFlag() == BARRIER_STATE;
 
     }
 	

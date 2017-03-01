@@ -1,5 +1,6 @@
 package GUI;
 
+import BoxState.IBoxState;
 import com.jgoodies.forms.factories.CC;
 import com.jgoodies.forms.layout.FormLayout;
 
@@ -10,6 +11,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static BoxState.BoxState.*;
 import static Settings.AlgorithmSettings.WEIGHT;
 import static Settings.WindowSettings.*;
 
@@ -29,7 +31,7 @@ public class VisualizationGUI extends JFrame {
 	public VisualizationGUI() {
 		
 		initializeGUI();
-		VISUALIZATION_WINDOW.createBoxRegionField();
+//		VISUALIZATION_WINDOW.createBoxRegionField();
 		
 	}
 	
@@ -361,52 +363,52 @@ public class VisualizationGUI extends JFrame {
 	
 	private void fileResetAllBoxes() {
 		
-		BoxSystem.Box.flags[] flags = {BoxSystem.Box.flags.SEARCHED, BoxSystem.Box.flags.PARTIAL_BARRIER, BoxSystem.Box.flags.FULL_BARRIER, BoxSystem.Box.flags.SHORTEST_PATH, BoxSystem.Box.flags.START, BoxSystem.Box.flags.END, BoxSystem.Box.flags.QUEUED};
+		IBoxState[] flags = {SEARCHED_BOX_STATE, BARRIER_STATE, SHORTEST_PATH_BOX_STATE, START_BOX_STATE, END_BOX_STATE, QUEUED_BOX_STATE};
 		VISUALIZATION_WINDOW.clearBoxFieldFlags(flags);
 		
 	}
 	
 	private void fileResetSearchedBoxes() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.SEARCHED);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(SEARCHED_BOX_STATE);
 		
 	}
 	
 	private void fileResetFullBarrierBoxes() {
 			
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.FULL_BARRIER);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(BARRIER_STATE);
 			
 	}
 	
 	private void fileResetPartialBarrierBoxes() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.PARTIAL_BARRIER);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(BARRIER_STATE);
 			
 	}
 	
 	private void fileResetShortBoxes() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.SHORTEST_PATH);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(SHORTEST_PATH_BOX_STATE);
 		
 	}
 	
 	private void fileResetStartBox() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.START);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(START_BOX_STATE);
 		BoxSystem.Box.checkBeginningAndEndState();
 		
 	}
 	
 	private void fileResetEndBox() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.END);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(END_BOX_STATE);
 		BoxSystem.Box.checkBeginningAndEndState();
 		
 	}
 	
 	private void fileResetQueuedBoxes() {
 		
-		VISUALIZATION_WINDOW.clearBoxFieldFlag(BoxSystem.Box.flags.QUEUED);
+		VISUALIZATION_WINDOW.clearBoxFieldFlag(QUEUED_BOX_STATE);
 		
 	}
 	
