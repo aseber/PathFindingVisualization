@@ -20,7 +20,7 @@ public class StandardBoxState extends BoxState {
         }
 
         double weight = context.getWeight();
-        int value = (int) (200 - 150*weight);
+        int value = (int) (200 - 150 * weight);
         return new Color(value, value, value);
 
     }

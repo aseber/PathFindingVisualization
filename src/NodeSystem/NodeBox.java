@@ -14,8 +14,9 @@ public class NodeBox extends Node { // Wrapper class for boxes that contains a r
 	
 	public HashSet<INode> findNeighboringNodes() { // simply converts valid boxes to valid nodes
 
-        Box box = (Box) getObject();
-		HashSet<Box> neighboringBoxes = box.findNeighboringBoxes(1);
+        System.out.println("NOTE! NodeBox::findNeighboringNodes() called and is currently broken!");
+        /*Box box = (Box) getObject();
+		HashSet<Box> neighboringBoxes = .findNeighboringBoxes(1);
 		HashSet<INode> neighboringNodes = new HashSet<>();
 		
 		for (Box neighboringBox : neighboringBoxes) {
@@ -24,7 +25,8 @@ public class NodeBox extends Node { // Wrapper class for boxes that contains a r
 			
 		}
 		
-		return neighboringNodes;
+		return neighboringNodes;*/
+		return new HashSet<>();
 		
 	}
 

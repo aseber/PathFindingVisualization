@@ -4,21 +4,31 @@ import BoxState.BoxState;
 import Utilities.MyUtils;
 
 import java.awt.*;
-import java.util.HashSet;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import static Settings.WindowSettings.BOX_XY_SIZE;
 import static Settings.WindowSettings.ROW_COLUMN_COUNT;
 
-public class BoxGrid {
+public class BoxGrid extends Observable implements Observer {
 
     private Point gridSize;
     private Box[][] boxMap;
 
     public BoxGrid(Point gridSize) {
 
+
+
         this.gridSize = gridSize;
         boxMap = new Box[gridSize.x][gridSize.y];
         initializeField();
+
+    }
+
+    public void update(Observable observable, Object object) {
+
+        setChanged();
+        notifyObservers(observable);
 
     }
 
@@ -118,12 +128,12 @@ public class BoxGrid {
 
     public HashSet<Box> boxesInCircle(Box initialBox, double radius) { // Used to draw larger swaths
 
-        HashSet<Box> boxSet = new HashSet<Box>();
+        HashSet<Box> boxSet = new HashSet<>();
         Point center = initialBox.getCenterPoint();
         double size = BOX_XY_SIZE;
         double radiusSq = Math.pow(radius, 2.0);
 
-        HashSet<Box> roughIntersectingBoxes = initialBox.findNeighboringBoxes((int) Math.ceil(radius/(size - 1)));
+        HashSet<Box> roughIntersectingBoxes = findNeighboringBoxes((int) Math.ceil(radius / (size - 2)), initialBox);
 
         for (Box currentBox : roughIntersectingBoxes) {
 
@@ -140,6 +150,109 @@ public class BoxGrid {
 
         boxSet.add(initialBox);
         return boxSet;
+
+    }
+
+    private synchronized HashSet<Box> findNeighboringBoxes(int order, Box parentBox) {
+
+        if (order < 1) {
+
+            return new HashSet<>();
+
+        }
+
+        HashSet<Box> neighbors = new HashSet<>();
+        HashMap<Box, Integer> orderMap = new HashMap<>();
+        LinkedBlockingQueue<Box> queue = new LinkedBlockingQueue<>();
+
+        queue.add(parentBox);
+        orderMap.put(parentBox, 0);
+
+        while (!queue.isEmpty()) {
+
+            Box currentBox = queue.poll();
+            neighbors.add(currentBox);
+            HashSet<Box> directNeighbors = getDirectNeighborBoxes(currentBox);
+
+            int neighborBoxOrder = orderMap.get(currentBox) + 1;
+
+            for (Box neighbor : directNeighbors) {
+
+                if (neighborBoxOrder < order) {
+
+                    if (!queue.contains(neighbor) && !neighbors.contains(neighbor)) {
+
+                        queue.add(neighbor);
+                        orderMap.put(neighbor, neighborBoxOrder);
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        return neighbors;
+
+    }
+
+    private HashSet<Box> getDirectNeighborBoxes(Box parentBox) {
+
+        Point[] offsets = {new Point(0, -1), new Point(1, 0), new Point(0, 1), new Point(-1, 0)};
+        HashSet<Box> neighbors = new HashSet<>();
+
+        for (Point offset : offsets) {
+
+            int dx = offset.x;
+            int dy = offset.y;
+
+            Point offsetPosition = parentBox.getWindowPosition();
+            offsetPosition.translate(dx, dy);
+
+            if (offsetPosition.x < 0 || offsetPosition.y < 0 || offsetPosition.x >= ROW_COLUMN_COUNT || offsetPosition.y >= ROW_COLUMN_COUNT) {
+
+                continue;
+
+            }
+
+            neighbors.add(getBoxFromIndex(offsetPosition));
+
+        }
+
+        return neighbors;
+
+    }
+
+    public HashSet<Box> floodFill(Box startBox, HashSet<Box> allowedBoxes) { // Used to find regions known as "islands"
+
+        HashSet<Box> filledBoxes = new HashSet<Box>();
+        HashSet<Box> nodesToVisit = new HashSet<Box>();
+        Iterator<Box> iterator = null;
+        nodesToVisit.add(startBox);
+
+        while (!nodesToVisit.isEmpty()) {
+
+            iterator = nodesToVisit.iterator();
+            Box currentBox = iterator.next();
+            iterator.remove();
+            iterator = null;
+            filledBoxes.add(currentBox);
+            HashSet<Box> neighbors = findNeighboringBoxes(1, currentBox);
+
+            for (Box neighbor : neighbors) {
+
+                if (!filledBoxes.contains(neighbor) && allowedBoxes.contains(neighbor)) {
+
+                    nodesToVisit.add(neighbor);
+
+                }
+
+            }
+
+        }
+
+        return filledBoxes;
 
     }
 
@@ -217,10 +330,11 @@ public class BoxGrid {
 
             for (int column = 0; column < gridSize.y; column++) {
 
-                int x = row*(6);
-                int y = column*(6);
+                int x = row * BOX_XY_SIZE;
+                int y = column * BOX_XY_SIZE;
                 Box box = new Box(x, y, row, column, BoxState.STANDARD_STATE);
                 boxMap[row][column] = box;
+                box.addObserver(this);
 
             }
 

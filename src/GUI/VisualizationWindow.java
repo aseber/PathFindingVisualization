@@ -17,13 +17,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.Observable;
+import java.util.Observer;
 
 import static BoxState.BoxState.*;
 import static Settings.AlgorithmSettings.WEIGHT;
 import static Settings.WindowSettings.*;
 
-public class VisualizationWindow extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
-	
+public class VisualizationWindow extends JPanel implements ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, Observer {
+
+    // boxVisuals class that handles all things box. Has constant box outline image, and dynamic box image for their states. Will be observer of visualizationWindow for changing size, as well as BoxGrid for changes to underlying boxes. Handle selection?
+
 	private static final long serialVersionUID = -453107461013635372L;
 	int WINDOW_WIDTH, WINDOW_HEIGHT;
 	static boolean mouse1Down, mouse3Down, shiftDown, spaceDown;
@@ -33,10 +37,12 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	boolean drawFunInformation = false;
 	int drawSize = 1;
 	private BoxGrid boxGrid;
-	private BufferedImage image, regionChangeImage;
+	private BufferedImage boxImage, regionChangeImage, selectionHighlight;
 //	RegionEventDriver driver = new RegionEventDriver();
 	PathfindExecutor executor = new PathfindExecutor();
-	
+
+    Box selectedBox;
+
 	public VisualizationWindow() {
 		
 		new Thread(executor).start();
@@ -54,23 +60,39 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		WINDOW_WIDTH = getWidth();
 		WINDOW_HEIGHT = getHeight();
 	
-		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
-		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
-
-		boxGrid = new BoxGrid(new Point(ROW_COLUMN_COUNT, ROW_COLUMN_COUNT));
+		int sizeX = ROW_COLUMN_COUNT * BOX_XY_SIZE + 1;
+		int sizeY = ROW_COLUMN_COUNT * BOX_XY_SIZE + 1;
 
 		Graphics g;
 		
-		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
-		g = image.getGraphics();
+		boxImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
+		g = boxImage.getGraphics();
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, sizeX, sizeY);
-		
+
+        selectionHighlight = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
+        g = selectionHighlight.getGraphics();
+        g.setColor(new Color(255, 255, 255, 0));
+        g.fillRect(0, 0, sizeX, sizeY);
+
 		regionChangeImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		g = regionChangeImage.getGraphics();
 		g.setColor(new Color(255, 255, 255, 0));
 		g.fillRect(0, 0, sizeX, sizeY);
-		
+
+        boxGrid = new BoxGrid(new Point(ROW_COLUMN_COUNT, ROW_COLUMN_COUNT));
+        boxGrid.addObserver(this);
+
+        repaint(boxGrid.getAllBoxes());
+
+	}
+
+	public void update(Observable observable, Object object) {
+
+        Box box = (Box) object;
+        box.drawBox(boxImage.getGraphics(), true);
+        repaint();
+
 	}
 
 	public void paintComponent(Graphics g) {
@@ -86,8 +108,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		//g.drawLine(0, mouseX, mouseX, WINDOW_HEIGHT);
 		//g.drawLine(mouseY, 0, WINDOW_WIDTH, mouseY);
 		
-		g.drawImage(image, 0, 0, null);					// Draw the image containing all of the boxes
-		g.drawImage(regionChangeImage, 0, 0, null);		// Draw the regionChanges on top of the boxes
+		g.drawImage(boxImage, 0, 0, null);					// Draw the boxImage containing all of the boxes
+		g.drawImage(regionChangeImage, 0, 0, null);	    	// Draw the regionChanges on top of the boxes
+        g.drawImage(selectionHighlight, 0, 0, null);        // Draw the selection highlights
 		
 		g.setColor(Color.BLACK);
 		g.drawArc(mouseX - drawSize, mouseY - drawSize, drawSize*2, drawSize*2, 0, 360);
@@ -155,15 +178,15 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 	
 	public void setWeight(double value) {
 		
-		WEIGHT = MyUtils.clampDouble(1.0, value/1000, 0.0);
-		VISUALIZATION_GUI.setWeightSlider((int) (WEIGHT*1000));
+		WEIGHT = MyUtils.clampDouble(1.0, value / 1000, 0.0);
+		VISUALIZATION_GUI.setWeightSlider((int) (WEIGHT * 1000));
 		VISUALIZATION_GUI.setWeightValue(WEIGHT);
 		
 	}
 	
-	public void repaint(Box box) { // Draw each box out on the image graphics, only repaint when each box changes flags
+	public void repaint(Box box) { // Draw each box out on the boxImage graphics, only repaint when each box changes flags
 
-		box.drawBox(image.getGraphics(), true);
+		box.drawBox(boxImage.getGraphics(), true);
 		repaint();
 		
 	}
@@ -277,12 +300,13 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		
 		int sizeX = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
 		int sizeY = ROW_COLUMN_COUNT* BOX_XY_SIZE + 1;
-		image = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
+		boxImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		regionChangeImage = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
+        selectionHighlight = new BufferedImage(sizeX, sizeY, BufferedImage.TYPE_INT_ARGB);
 		Dimension newDimension = new Dimension((int) (d.getWidth() + 17), (int) (d.getHeight() + 124));
 		this.setSize(d);
 		VISUALIZATION_GUI.setSize(newDimension);
-		Graphics g = image.getGraphics();
+		Graphics g = boxImage.getGraphics();
 		g.setColor(Color.CYAN);
 		g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		g = regionChangeImage.getGraphics();
@@ -306,7 +330,31 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		mouse.setLocation(x, y);
 		
 	}
-	
+
+	private void setSelectionCircularHighlight(Box box, double size) {
+
+        setSelectionHighlight(boxGrid.boxesInCircle(box, size));
+
+    }
+
+	private void setSelectionHighlight(HashSet<Box> boxesToHighlight) {
+
+        Graphics g = selectionHighlight.getGraphics();
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setComposite(AlphaComposite.DstAtop);
+        g.setColor(new Color(255, 255, 255, 0));
+        g.fillRect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        for (Box box : boxesToHighlight) {
+
+            box.drawBox(g, false, new Color(100, 100, 255, 125));
+
+        }
+
+        repaint();
+
+    }
+
 	public void mousePressed(MouseEvent e) {
 		
 		if (e.getButton() == MouseEvent.BUTTON1) {
@@ -380,7 +428,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		}
 		
 	}
-	
+
 	public void mouseMoved(MouseEvent e) {
 		
 		int mouseX = e.getX();
@@ -388,9 +436,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		mouse.setLocation(MyUtils.clampInt(WINDOW_WIDTH, mouseX, 0), MyUtils.clampInt(WINDOW_HEIGHT, mouseY, 0));
 		
 		Box box = boxGrid.getBoxFromPosition(mouseX, mouseY);
-		box.setSelected();
-		
-		Box oldBox = boxGrid.getBoxFromPosition(oldMouse);
+        setSelectionCircularHighlight(box, drawSize);
+
+        Box oldBox = boxGrid.getBoxFromPosition(oldMouse);
 		
 		if (drawFunInformation) {
 		
@@ -413,8 +461,10 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		mouse.setLocation(MyUtils.clampInt(WINDOW_WIDTH, mouseX, 0), MyUtils.clampInt(WINDOW_HEIGHT, mouseY, 0));
-			
-		HashSet<Box> boxesList = new HashSet<Box>();
+
+        setSelectionCircularHighlight(boxGrid.getBoxFromPosition(mouse.getLocation()), drawSize);
+
+        HashSet<Box> boxesList = new HashSet<>();
 		Box box = boxGrid.getBoxFromPosition(mouseX, mouseY);
 		Box oldBox = boxGrid.getBoxFromPosition(oldMouse);
 		
@@ -431,26 +481,19 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			}
 			
 		}
-		
+
 		if (mouse1Down) {
 			
 			Box.setWeights(boxesList, WEIGHT);
 			
-			box.setSelected();
-		
-		}
+        }
 		
 		else if (mouse3Down) {
-		
-			for (Box currentBox : boxesList) {
-				
-				currentBox.setFlag(STANDARD_STATE);
-				
-			}
 
-			box.setSelected();
-			
-		}
+            Box.setFlags(boxesList, STANDARD_STATE);
+            Box.setWeights(boxesList, 0.0);
+
+        }
 		
 	}
 	
@@ -537,15 +580,16 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			
 			setDrawSize(MyUtils.clampInt(50, drawSize + 5, 1));
-			
-		}
+            setSelectionCircularHighlight(boxGrid.getBoxFromPosition(getMousePosition()), drawSize);
+
+        }
 		
 		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 				
 			setDrawSize(MyUtils.clampInt(50, drawSize - 5, 1));
-			
-			
-		}
+            setSelectionCircularHighlight(boxGrid.getBoxFromPosition(getMousePosition()), drawSize);
+
+        }
 		
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
@@ -580,8 +624,9 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 		if (!shiftDown) {
 			
 			setDrawSize(MyUtils.clampInt(50, drawSize - e.getWheelRotation(), 1));
-			
-		}
+            setSelectionCircularHighlight(boxGrid.getBoxFromPosition(getMousePosition()), drawSize);
+
+        }
 		
 		else {
 		

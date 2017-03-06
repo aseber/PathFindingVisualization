@@ -10,7 +10,6 @@ import java.awt.*;
 public interface IBoxState {
 
     Color getColor(Box context);
-    void setWeight(double weight, Box context);
     String toString();
     void resetSoftState(Box context);
     void resetHardState(Box context);
