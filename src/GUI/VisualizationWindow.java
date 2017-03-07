@@ -421,7 +421,7 @@ public class VisualizationWindow extends JPanel implements ComponentListener, Mo
 			
 			else {
 				
-				Box.setFlags(boxes, STANDARD_STATE);
+				Box.setWeights(boxes, 0.0);
 				
 			}
 			
